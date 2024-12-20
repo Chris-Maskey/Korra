@@ -23,7 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { SignInFlow } from "../types";
 
-const signInSchema = z.object({
+const signUpSchema = z.object({
   username: z.string().min(1, {
     message: "Username is required",
   }),
@@ -35,16 +35,16 @@ const signInSchema = z.object({
   }),
 });
 
-type SignInSchemaType = z.infer<typeof signInSchema>;
+type SignUpSchemaType = z.infer<typeof signUpSchema>;
 
-type SignInCardProps = {
+type SignUpCardProps = {
   setState: (state: SignInFlow) => void;
 };
-
-export const SignInCard = ({ setState }: SignInCardProps) => {
-  const form = useForm<SignInSchemaType>({
-    resolver: zodResolver(signInSchema),
+export const SignUpCard = ({ setState }: SignUpCardProps) => {
+  const form = useForm<SignUpSchemaType>({
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
+      username: "",
       email: "",
       password: "",
     },
@@ -53,11 +53,11 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
   const year = new Date().getFullYear();
 
   return (
-    <Card className="w-full  mx-auto px-8 pt-4">
+    <Card className="w-full mx-auto px-8 pt-4">
       <CardHeader className="space-y-1">
-        <CardTitle className="text-2xl font-bold ">Welcome back</CardTitle>
+        <CardTitle className="text-2xl font-bold ">Create an account</CardTitle>
         <CardDescription className="">
-          Enter your credentials to access your account
+          Enter your email below to create your account
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -90,6 +90,19 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
           >
             <FormField
               control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="email"
               render={({ field }) => (
                 <FormItem>
@@ -115,18 +128,18 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
               )}
             />
             <Button type="submit" size={"lg"}>
-              Sign In
+              Sign Up
             </Button>
           </form>
         </Form>
         <p className="text-xs text-muted-foreground">
-          Don&apos;t have an account?{" "}
+          Already have an account?{" "}
           <Button
             variant="link"
-            className="p-0 h-auto text-xs text-primary"
-            onClick={() => setState("signup")}
+            className="p-0 h-auto text-primary text-xs"
+            onClick={() => setState("signin")}
           >
-            Sign Up
+            Sign In
           </Button>
         </p>
       </CardContent>
