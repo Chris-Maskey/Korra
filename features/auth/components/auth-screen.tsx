@@ -17,6 +17,7 @@ export const AuthScreen = () => {
         ) : (
           <SignUpCard setAuthStateAction={setState} />
         )}
+        {/* <ModeToggle /> */}
       </div>
       <BackgroundBeams />
     </div>

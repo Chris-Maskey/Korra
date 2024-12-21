@@ -27,6 +27,7 @@ import { SignInFlow } from "../types";
 import { signInSchema } from "../schema";
 import { useSignIn } from "../api/use-sign-in";
 import { Loader2 } from "lucide-react";
+import OAuthButton from "./oauth-button";
 
 type SignInSchemaType = z.infer<typeof signInSchema>;
 
@@ -64,24 +65,7 @@ export const SignInCard = ({ setAuthStateAction }: SignInCardProps) => {
          * NOTE: Social Authentication
          */}
         <div className="grid gap-4 sm:grid-cols-2">
-          <Button
-            variant="outline"
-            size={"lg"}
-            className="w-full"
-            disabled={isPending}
-          >
-            <FcGoogle className="size-5" />
-            Continue with Google
-          </Button>
-          <Button
-            variant="outline"
-            size={"lg"}
-            className="w-full"
-            disabled={isPending}
-          >
-            <FaGithub className="size-5" />
-            Continue with GitHub
-          </Button>
+          <OAuthButton />
         </div>
         <div className="flex items-center gap-2 max-w-lg">
           <div className="h-px flex-1 bg-muted"></div>

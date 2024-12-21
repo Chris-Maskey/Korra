@@ -45,5 +45,4 @@ const app = new Hono()
     }
     return c.json({ message: "Sign-Up Successful", data }, 200);
   });
-
 export default app;
