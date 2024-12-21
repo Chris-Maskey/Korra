@@ -1,3 +1,5 @@
+"use client";
+
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,26 +24,19 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignInFlow } from "../types";
-
-const signInSchema = z.object({
-  username: z.string().min(1, {
-    message: "Username is required",
-  }),
-  email: z.string().email().min(1, {
-    message: "Email is required",
-  }),
-  password: z.string().min(1, {
-    message: "Password is required",
-  }),
-});
+import { signInSchema } from "../schema";
+import { useSignIn } from "../api/use-sign-in";
+import { Loader2 } from "lucide-react";
 
 type SignInSchemaType = z.infer<typeof signInSchema>;
 
 type SignInCardProps = {
-  setState: (state: SignInFlow) => void;
+  setAuthStateAction: (state: SignInFlow) => void;
 };
 
-export const SignInCard = ({ setState }: SignInCardProps) => {
+export const SignInCard = ({ setAuthStateAction }: SignInCardProps) => {
+  const { mutate, isPending } = useSignIn();
+
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -51,6 +46,10 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
   });
 
   const year = new Date().getFullYear();
+
+  const onSubmit = (values: SignInSchemaType) => {
+    mutate({ json: values });
+  };
 
   return (
     <Card className="w-full  mx-auto px-8 pt-4">
@@ -65,11 +64,21 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
          * NOTE: Social Authentication
          */}
         <div className="grid gap-4 sm:grid-cols-2">
-          <Button variant="outline" size={"lg"} className="w-full">
+          <Button
+            variant="outline"
+            size={"lg"}
+            className="w-full"
+            disabled={isPending}
+          >
             <FcGoogle className="size-5" />
             Continue with Google
           </Button>
-          <Button variant="outline" size={"lg"} className="w-full">
+          <Button
+            variant="outline"
+            size={"lg"}
+            className="w-full"
+            disabled={isPending}
+          >
             <FaGithub className="size-5" />
             Continue with GitHub
           </Button>
@@ -85,7 +94,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
          */}
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((data) => console.log(data))}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
             <FormField
@@ -95,7 +104,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} type="email" />
+                    <Input {...field} type="email" disabled={isPending} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -108,14 +117,18 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} type="password" />
+                    <Input {...field} type="password" disabled={isPending} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" size={"lg"}>
-              Sign In
+            <Button type="submit" size={"lg"} disabled={isPending}>
+              {isPending ? (
+                <Loader2 className="animate-spin size-4" />
+              ) : (
+                <span> Sign In</span>
+              )}
             </Button>
           </form>
         </Form>
@@ -124,7 +137,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
           <Button
             variant="link"
             className="p-0 h-auto text-xs text-primary"
-            onClick={() => setState("signup")}
+            onClick={() => setAuthStateAction("signup")}
           >
             Sign Up
           </Button>

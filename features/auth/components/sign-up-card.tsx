@@ -8,8 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -22,35 +20,44 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { SignInFlow } from "../types";
-
-const signUpSchema = z.object({
-  username: z.string().min(1, {
-    message: "Username is required",
-  }),
-  email: z.string().email().min(1, {
-    message: "Email is required",
-  }),
-  password: z.string().min(1, {
-    message: "Password is required",
-  }),
-});
+import OAuthButton from "./oauth-button";
+import { signUpSchema } from "../schema";
+import { useSignUp } from "../api/use-sign-up";
+import { Loader2 } from "lucide-react";
 
 type SignUpSchemaType = z.infer<typeof signUpSchema>;
 
 type SignUpCardProps = {
-  setState: (state: SignInFlow) => void;
+  setAuthStateAction: (state: SignInFlow) => void;
 };
-export const SignUpCard = ({ setState }: SignUpCardProps) => {
+
+export const SignUpCard = ({ setAuthStateAction }: SignUpCardProps) => {
+  const { mutate, isPending } = useSignUp();
+
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      username: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
   const year = new Date().getFullYear();
+
+  const onSubmit = (values: SignUpSchemaType) => {
+    mutate(
+      { json: values },
+      {
+        onSuccess: () => {
+          setAuthStateAction("signin");
+          form.reset();
+        },
+      },
+    );
+  };
 
   return (
     <Card className="w-full mx-auto px-8 pt-4">
@@ -61,18 +68,9 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {/*
-         * NOTE: Social Authentication
-         */}
+        {/*NOTE: Social Authentication*/}
         <div className="grid gap-4 sm:grid-cols-2">
-          <Button variant="outline" size={"lg"} className="w-full">
-            <FcGoogle className="size-5" />
-            Continue with Google
-          </Button>
-          <Button variant="outline" size={"lg"} className="w-full">
-            <FaGithub className="size-5" />
-            Continue with GitHub
-          </Button>
+          <OAuthButton disabled={isPending} />
         </div>
         <div className="flex items-center gap-2 max-w-lg">
           <div className="h-px flex-1 bg-muted"></div>
@@ -85,22 +83,37 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
          */}
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit((data) => console.log(data))}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-4"
           >
-            <FormField
-              control={form.control}
-              name="username"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled={isPending} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} disabled={isPending} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <FormField
               control={form.control}
               name="email"
@@ -108,7 +121,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input {...field} type="email" />
+                    <Input {...field} type="email" disabled={isPending} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,14 +134,31 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} type="password" />
+                    <Input {...field} type="password" disabled={isPending} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <Button type="submit" size={"lg"}>
-              Sign Up
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="password" disabled={isPending} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" size={"lg"} disabled={isPending}>
+              {isPending ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <span>Sign Up</span>
+              )}
             </Button>
           </form>
         </Form>
@@ -137,7 +167,8 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
           <Button
             variant="link"
             className="p-0 h-auto text-primary text-xs"
-            onClick={() => setState("signin")}
+            onClick={() => setAuthStateAction("signin")}
+            disabled={isPending}
           >
             Sign In
           </Button>
