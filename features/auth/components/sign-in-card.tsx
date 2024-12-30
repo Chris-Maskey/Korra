@@ -10,8 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FaGithub } from "react-icons/fa";
-import { FcGoogle } from "react-icons/fc";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -25,9 +23,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { SignInFlow } from "../types";
 import { signInSchema } from "../schema";
-import { useSignIn } from "../api/use-sign-in";
+import { signIn } from "../actions/sign-in";
 import { Loader2 } from "lucide-react";
 import OAuthButton from "./oauth-button";
+import { useTransition } from "react";
+import { useSignIn } from "../hooks/use-sign-in";
 
 type SignInSchemaType = z.infer<typeof signInSchema>;
 
@@ -36,8 +36,6 @@ type SignInCardProps = {
 };
 
 export const SignInCard = ({ setAuthStateAction }: SignInCardProps) => {
-  const { mutate, isPending } = useSignIn();
-
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -46,10 +44,12 @@ export const SignInCard = ({ setAuthStateAction }: SignInCardProps) => {
     },
   });
 
+  const { mutate, isPending } = useSignIn();
+
   const year = new Date().getFullYear();
 
   const onSubmit = (values: SignInSchemaType) => {
-    mutate({ json: values });
+    mutate(values);
   };
 
   return (

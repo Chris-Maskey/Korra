@@ -22,8 +22,9 @@ import { Input } from "@/components/ui/input";
 import { SignInFlow } from "../types";
 import OAuthButton from "./oauth-button";
 import { signUpSchema } from "../schema";
-import { useSignUp } from "../api/use-sign-up";
 import { Loader2 } from "lucide-react";
+import { signUp } from "../actions/sign-up";
+import { useSignUp } from "../hooks/use-sign-up";
 
 type SignUpSchemaType = z.infer<typeof signUpSchema>;
 
@@ -39,6 +40,7 @@ export const SignUpCard = ({ setAuthStateAction }: SignUpCardProps) => {
     defaultValues: {
       firstName: "",
       lastName: "",
+      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -47,16 +49,8 @@ export const SignUpCard = ({ setAuthStateAction }: SignUpCardProps) => {
 
   const year = new Date().getFullYear();
 
-  const onSubmit = (values: SignUpSchemaType) => {
-    mutate(
-      { json: values },
-      {
-        onSuccess: () => {
-          setAuthStateAction("signin");
-          form.reset();
-        },
-      },
-    );
+  const onSubmit = async (values: SignUpSchemaType) => {
+    mutate(values);
   };
 
   return (
@@ -114,6 +108,19 @@ export const SignUpCard = ({ setAuthStateAction }: SignUpCardProps) => {
                 )}
               />
             </div>
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isPending} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="email"

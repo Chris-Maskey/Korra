@@ -41,7 +41,6 @@ export async function updateSession(request: NextRequest) {
 
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
     !request.nextUrl.pathname.startsWith("/auth") &&
     !request.nextUrl.pathname.startsWith("/api")
   ) {
@@ -49,6 +48,13 @@ export async function updateSession(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/auth";
     return NextResponse.redirect(url);
+  } else {
+    // User is logged in, prevent them from accessing the auth page
+    if (request.nextUrl.pathname.startsWith("/auth") && user) {
+      const url = request.nextUrl.clone();
+      url.pathname = "/space";
+      return NextResponse.redirect(url); // Redirect logged-in users to the home page
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
