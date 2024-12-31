@@ -1,18 +1,14 @@
 import { useMutation } from "@tanstack/react-query";
-import { signOut } from "../actions/sign-out";
+import { signInWithOAuth } from "../actions/sign-in-with-oauth";
 import { toast } from "sonner";
 
-export const useSignOut = () => {
+export const useSignInWithOAuth = () => {
   const mutate = useMutation({
-    mutationFn: signOut,
-    onMutate: () => {
-      toast.promise(signOut, {
-        loading: "Signing Out",
-      });
-    },
+    mutationFn: signInWithOAuth,
     onError: (error) => {
       toast.error(error.message);
     },
   });
+
   return mutate;
 };

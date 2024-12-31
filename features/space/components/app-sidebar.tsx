@@ -28,6 +28,7 @@ import {
 import {
   ChevronUp,
   CircleUser,
+  Loader2,
   LogOut,
   ReceiptIndianRupee,
   Settings,
@@ -117,6 +118,7 @@ export const AppSidebar = () => {
                 >
                   <LogOut />
                   <span>Sign out</span>
+                  {isPending && <Loader2 className="ml-auto" />}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

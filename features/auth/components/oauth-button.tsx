@@ -3,19 +3,18 @@
 import { Button } from "@/components/ui/button";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { signInWithOAuth } from "../actions/sign-in-with-oauth";
+import { Provider } from "@supabase/supabase-js";
+import { useSignInWithOAuth } from "../hooks/use-sign-in-with-oauth";
 
 type OAuthButtonProps = {
   disabled?: boolean;
 };
 
 const OAuthButton = ({ disabled }: OAuthButtonProps) => {
-  const handleSignIn = async (provider: "google" | "github") => {
-    try {
-      await signInWithOAuth(provider);
-    } catch (error) {
-      console.error("OAuth Sign-In Error:", error);
-    }
+  const { mutate, isPending } = useSignInWithOAuth();
+
+  const handleSignIn = (provider: Provider) => {
+    mutate(provider);
   };
 
   return (
@@ -24,8 +23,8 @@ const OAuthButton = ({ disabled }: OAuthButtonProps) => {
         variant="outline"
         size={"lg"}
         className="w-full"
-        disabled={disabled}
-        onClick={async () => await handleSignIn("google")}
+        disabled={disabled || isPending}
+        onClick={() => handleSignIn("google")}
       >
         <FcGoogle className="size-5" />
         Continue with Google
@@ -34,8 +33,8 @@ const OAuthButton = ({ disabled }: OAuthButtonProps) => {
         variant="outline"
         size={"lg"}
         className="w-full"
-        disabled={disabled}
-        onClick={async () => await handleSignIn("github")}
+        disabled={disabled || isPending}
+        onClick={() => handleSignIn("github")}
       >
         <FaGithub className="size-5" />
         Continue with GitHub
