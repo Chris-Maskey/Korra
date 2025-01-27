@@ -6,7 +6,7 @@ export const useSignUp = () => {
   const mutate = useMutation({
     mutationFn: signUp,
     onSuccess: (data) => {
-      toast.success(data.message);
+      toast.info(data.message);
     },
     onError: (error) => {
       toast.error(error.message);

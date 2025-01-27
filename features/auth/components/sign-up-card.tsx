@@ -23,7 +23,6 @@ import { SignInFlow } from "../types";
 import OAuthButton from "./oauth-button";
 import { signUpSchema } from "../schema";
 import { Loader2 } from "lucide-react";
-import { signUp } from "../actions/sign-up";
 import { useSignUp } from "../hooks/use-sign-up";
 
 type SignUpSchemaType = z.infer<typeof signUpSchema>;
@@ -50,7 +49,12 @@ export const SignUpCard = ({ setAuthStateAction }: SignUpCardProps) => {
   const year = new Date().getFullYear();
 
   const onSubmit = async (values: SignUpSchemaType) => {
-    mutate(values);
+    mutate(values, {
+      onSuccess: () => {
+        form.reset();
+        setAuthStateAction("signin");
+      },
+    });
   };
 
   return (

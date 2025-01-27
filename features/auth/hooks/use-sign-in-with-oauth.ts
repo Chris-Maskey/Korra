@@ -5,6 +5,11 @@ import { toast } from "sonner";
 export const useSignInWithOAuth = () => {
   const mutate = useMutation({
     mutationFn: signInWithOAuth,
+    onMutate: (data) => {
+      toast.promise(signInWithOAuth(data), {
+        loading: "Signing In",
+      });
+    },
     onError: (error) => {
       toast.error(error.message);
     },

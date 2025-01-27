@@ -31,7 +31,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>{children}</QueryProvider>
-          <Toaster richColors />
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
