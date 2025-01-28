@@ -7,6 +7,7 @@ export const useCurrentUser = () => {
     queryKey: ["current-user"],
     queryFn: currentUser,
     select: (data) => data as Database["public"]["Tables"]["profiles"]["Row"],
+    refetchOnWindowFocus: false,
   });
 
   return query;

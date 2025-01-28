@@ -68,29 +68,34 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
             <span className="text-sm text-muted-foreground font-medium">
               @{user?.user_name}
             </span>
-            <Separator className="my-2" />
-            <p className="mt-2 text-sm text-center">
-              Software engineer passionate about building great user experiences
-            </p>
-            <div className="flex flex-col items-center mt-2 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <MapPin className="size-4" /> San Francisco, CA
-              </span>
-              <span className="flex items-center gap-1">
-                <LinkIcon className="size-4" />
-                <a
-                  href={""}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-primary hover:underline"
-                >
-                  {"https://janedoe.dev".replace("https://", "")}
-                </a>
-              </span>
-              <span className="flex items-center gap-1">
-                <Calendar className="size-4" /> Joined September 2021
-              </span>
-            </div>
+            {user?.id !== profileId && (
+              <>
+                <Separator className="my-2" />
+                <p className="mt-2 text-sm text-center">
+                  Software engineer passionate about building great user
+                  experiences
+                </p>
+                <div className="flex flex-col items-center mt-2 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <MapPin className="size-4" /> San Francisco, CA
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <LinkIcon className="size-4" />
+                    <a
+                      href={""}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary hover:underline"
+                    >
+                      {"https://janedoe.dev".replace("https://", "")}
+                    </a>
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="size-4" /> Joined September 2021
+                  </span>
+                </div>
+              </>
+            )}
           </div>
         )}
         {state === "expanded" && isLoading && <SkeletonLoader />}
@@ -99,18 +104,18 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
       {state === "expanded" && (
         <>
           <CardContent>
-            <div className="bg-muted w-full flex items-center gap-4 p-4 rounded-md">
+            <div className="bg-muted w-full flex items-center justify-between p-3 rounded-md">
               <div className="w-1/3 text-center">
-                <h3 className="text-[1rem] font-medium text-center">4600</h3>
-                <span className="text-sm text-muted-foreground">Followers</span>
+                <h3 className="text-[0.95rem] font-medium text-center">4600</h3>
+                <span className="text-xs text-muted-foreground">Followers</span>
               </div>
               <div className="w-1/3 text-center">
-                <h3 className="text-[1rem] font-medium text-center">2600</h3>
-                <span className="text-sm text-muted-foreground">Following</span>
+                <h3 className="text-[0.95rem] font-medium text-center">2600</h3>
+                <span className="text-xs text-muted-foreground">Following</span>
               </div>
               <div className="w-1/3 text-center">
-                <h3 className="text-[1rem] font-medium text-center">142</h3>
-                <span className="text-sm text-muted-foreground">Posts</span>
+                <h3 className="text-[0.95rem] font-medium text-center">142</h3>
+                <span className="text-xs text-muted-foreground">Posts</span>
               </div>
             </div>
           </CardContent>

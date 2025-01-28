@@ -1,7 +1,7 @@
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Database } from "@/database.types";
 import { currentUser } from "@/features/auth/actions/current-user";
 import { Navbar } from "@/features/space/components/navbar";
+import { RecommendationCarousel } from "@/features/space/components/recommendation-carousel";
 import { UserProfileCard } from "@/features/space/components/user-profile-card";
 import { Pacifico } from "next/font/google";
 
@@ -26,7 +26,7 @@ const SpaceLayout = async ({ children }: SpaceLayoutProps) => {
       <section className="flex items-start gap-8 py-8">
         <UserProfileCard state="expanded" profileId={user?.id} />
         <section className="max-w-screen-md w-full">{children}</section>
-        <ModeToggle />
+        <RecommendationCarousel />
       </section>
     </main>
   );

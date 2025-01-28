@@ -5,13 +5,15 @@ import { toast } from "sonner";
 export const useSignIn = () => {
   const mutate = useMutation({
     mutationFn: signIn,
-    onMutate: (data) => {
-      toast.promise(signIn(data), {
-        loading: "Signing In",
-      });
+    onMutate: () => {
+      toast.loading("Signing In...");
     },
     onError: (error) => {
       toast.error(error.message || "An unexpected error occurred");
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success("Signed In");
     },
   });
 

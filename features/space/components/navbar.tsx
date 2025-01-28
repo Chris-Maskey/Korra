@@ -1,15 +1,20 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Bell, Home, MessageCircle, Search, Origami } from "lucide-react";
 import { UserMenu } from "./user-menu";
 import { NextFont } from "next/dist/compiled/@next/font";
+import { usePathname } from "next/navigation";
 
 type NavbarProps = {
   pacifico: NextFont;
 };
 
 export function Navbar({ pacifico }: NavbarProps) {
+  const pathname = usePathname();
+
   return (
     <nav className="border-b">
       <div className="flex h-16 items-center px-4 container mx-auto">
@@ -36,7 +41,10 @@ export function Navbar({ pacifico }: NavbarProps) {
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
           </Button>
-          <Button variant="ghost" size="icon">
+          <Button
+            variant={pathname === "/space" ? "default" : "ghost"}
+            size="icon"
+          >
             <Home className="h-5 w-5" />
             <span className="sr-only">Home</span>
           </Button>

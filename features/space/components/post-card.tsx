@@ -8,6 +8,8 @@ import {
   Send,
   HandCoins,
   EllipsisIcon,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,6 +22,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
+import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useGetPosts } from "../hooks/use-get-post";
 
 interface Comment {
   id: number;
@@ -48,6 +57,8 @@ export function PostCard({
   likes: initialLikes,
   comments: initialComments,
 }: PostCardProps) {
+  const { data } = useGetPosts();
+
   const [isLiked, setIsLiked] = useState(false);
   const [likes, setLikes] = useState(initialLikes);
   const [comments, setComments] = useState(initialComments);
@@ -92,9 +103,23 @@ export function PostCard({
           </div>
         </div>
         {}
-        <Button variant="ghost" size="icon">
-          <EllipsisIcon />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <EllipsisIcon />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-44" align="end" forceMount>
+            <DropdownMenuItem className="cursor-pointer text-xs">
+              <Pencil className="mr-1 size-1" />
+              <span>Edit</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="cursor-pointer text-xs">
+              <Trash2 className="mr-1 size-1" />
+              <span>Delete</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardHeader>
       <CardContent className="space-y-4">
         <p>{content}</p>
@@ -158,18 +183,22 @@ export function PostCard({
             Donate
           </Button>
         </div>
-        <div className="space-y-4 w-full">
+        <div className="space-y-6 w-full">
           {comments.map((comment) => (
             <div key={comment.id} className="flex items-start gap-2">
               <Avatar className="w-8 h-8">
                 <AvatarFallback>{comment.user.charAt(0)}</AvatarFallback>
               </Avatar>
-              <div className="flex flex-col">
-                <span className="font-semibold text-sm">{comment.user}</span>
-                <p className="text-sm">{comment.content}</p>
-                <span className="text-xs text-gray-500">
-                  {formatDistanceToNow(comment.timestamp, { addSuffix: true })}
-                </span>
+              <div className="flex flex-col w-full">
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-sm">{comment.user}</span>
+                  <span className="text-xs text-gray-500">
+                    {formatDistanceToNow(comment.timestamp, {
+                      addSuffix: true,
+                    })}
+                  </span>
+                </div>
+                <p className="text-sm mt-1">{comment.content}</p>
               </div>
             </div>
           ))}

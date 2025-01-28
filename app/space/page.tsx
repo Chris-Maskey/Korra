@@ -5,10 +5,10 @@ import { PostCard } from "@/features/space/components/post-card";
 const samplePost = {
   user: {
     name: "John Doe",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "",
   },
   content: "Just finished an amazing project! 🚀 #coding #webdevelopment",
-  // image: "/test.png",
+  image: "/test.png",
   timestamp: new Date("2023-06-15T12:00:00"),
   likes: 42,
   comments: [
