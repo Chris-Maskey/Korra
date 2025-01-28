@@ -29,30 +29,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-// Define the PostCardProps type as a single object
-type PostCardProps = {
-  id: string;
-  content: string;
-  image_url: string | null;
-  created_at: string | null;
-  profiles: {
-    full_name: string | null;
-    avatar_url: string | null;
-  }; // Ensure this is an array
-  likes: {
-    count: number;
-  }; // This should be a single object
-  comments: {
-    id: string;
-    content: string;
-    created_at: string;
-    profiles: {
-      full_name: string | null;
-      avatar_url: string | null;
-    }[];
-  }[];
-};
-
 export function PostCard({
   content,
   image_url,

@@ -1,11 +1,19 @@
-import { useQuery } from "@tanstack/react-query";
+// app/hooks/use-get-post.ts
+"use client";
+
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { getPosts } from "../actions/get-posts";
 
 export const useGetPosts = () => {
-  const query = useQuery({
+  return useInfiniteQuery({
     queryKey: ["posts"],
-    queryFn: getPosts,
-    refetchOnWindowFocus: false,
+    queryFn: async ({ pageParam = 1 }) => {
+      const { posts, hasNextPage } = await getPosts({ page: pageParam });
+      return { posts, hasNextPage };
+    },
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, lastPageParam) => {
+      return lastPage.hasNextPage ? lastPageParam + 1 : undefined;
+    },
   });
-  return query;
 };

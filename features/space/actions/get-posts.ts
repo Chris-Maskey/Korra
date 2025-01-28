@@ -1,12 +1,20 @@
+// app/actions/get-posts.ts
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { QueryData } from "@supabase/supabase-js";
 
-export const getPosts = async () => {
+export const getPosts = async ({
+  page = 1,
+  pageSize = 10,
+}: {
+  page?: number;
+  pageSize?: number;
+}) => {
   const supabase = await createClient();
+  const start = (page - 1) * pageSize;
+  const end = start + pageSize - 1;
 
-  const postQuery = supabase
+  const { data, error, count } = await supabase
     .from("posts")
     .select(
       `
@@ -23,14 +31,19 @@ export const getPosts = async () => {
         profiles:profiles(full_name, avatar_url)
       )
     `,
+      { count: "exact" },
     )
-    .order("created_at", { ascending: false });
-
-  const { data, error } = await postQuery;
+    .order("created_at", { ascending: false })
+    .range(start, end);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return data;
+  const hasNextPage = (count || 0) > end + 1;
+
+  return {
+    posts: data || [],
+    hasNextPage,
+  };
 };
