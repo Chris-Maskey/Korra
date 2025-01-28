@@ -1,5 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { CreatePost } from "@/features/space/components/create-post";
+import { FeedPage } from "@/features/space/components/feed-page";
 import { PostCard } from "@/features/space/components/post-card";
 
 const samplePost = {
@@ -32,7 +33,8 @@ const MySpacePage = () => {
     <section className="space-y-6">
       <CreatePost />
       <Separator className="max-w-2xl mx-auto" />
-      <PostCard {...samplePost} />
+      {/* <PostCard {...samplePost} /> */}
+      <FeedPage />
     </section>
   );
 };

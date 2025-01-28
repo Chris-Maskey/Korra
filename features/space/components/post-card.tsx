@@ -28,61 +28,59 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useGetPosts } from "../hooks/use-get-post";
 
-interface Comment {
-  id: number;
-  user: string;
+// Define the PostCardProps type as a single object
+type PostCardProps = {
+  id: string;
   content: string;
-  timestamp: Date;
-}
-
-interface PostCardProps {
-  user: {
-    name: string;
-    avatar: string;
-  };
-  content: string;
-  image?: string;
-  timestamp: Date;
-  likes: number;
-  comments: Comment[];
-}
+  image_url: string | null;
+  created_at: string | null;
+  profiles: {
+    full_name: string | null;
+    avatar_url: string | null;
+  }; // Ensure this is an array
+  likes: {
+    count: number;
+  }; // This should be a single object
+  comments: {
+    id: string;
+    content: string;
+    created_at: string;
+    profiles: {
+      full_name: string | null;
+      avatar_url: string | null;
+    }[];
+  }[];
+};
 
 export function PostCard({
-  user,
   content,
-  image,
-  timestamp,
-  likes: initialLikes,
-  comments: initialComments,
-}: PostCardProps) {
-  const { data } = useGetPosts();
-
+  image_url,
+  created_at,
+  profiles,
+  likes,
+  comments,
+}: any) {
   const [isLiked, setIsLiked] = useState(false);
-  const [likes, setLikes] = useState(initialLikes);
-  const [comments, setComments] = useState(initialComments);
+  const [likesCount, setLikesCount] = useState(likes.count || 0); // Access count directly
+  const [commentsList, setCommentsList] = useState(comments);
   const [newComment, setNewComment] = useState("");
 
   const handleLike = () => {
-    if (isLiked) {
-      setLikes(likes - 1);
-    } else {
-      setLikes(likes + 1);
-    }
+    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
     setIsLiked(!isLiked);
   };
 
   const handleComment = (e: React.FormEvent) => {
     e.preventDefault();
     if (newComment.trim()) {
-      const comment: Comment = {
-        id: comments.length + 1,
-        user: "Current User",
+      const comment = {
+        id: (commentsList.length + 1).toString(),
         content: newComment,
-        timestamp: new Date(),
+        created_at: new Date().toISOString(),
+        profiles: [{ full_name: "Current User", avatar_url: null }], // Replace with actual user data
       };
-      setComments([...comments, comment]);
+      setCommentsList([...commentsList, comment]);
       setNewComment("");
     }
   };
@@ -92,17 +90,23 @@ export function PostCard({
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex items-center gap-4">
           <Avatar>
-            <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+            <AvatarImage
+              src={profiles?.avatar_url || "/default-avatar.png"}
+              alt={profiles?.full_name || "User"}
+            />
+            <AvatarFallback>
+              {profiles?.full_name?.charAt(0) || "U"}
+            </AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <span className="font-semibold">{user.name}</span>
+            <span className="font-semibold">{profiles?.full_name}</span>
             <span className="text-sm text-gray-500">
-              {formatDistanceToNow(timestamp, { addSuffix: true })}
+              {formatDistanceToNow(new Date(created_at!.toString()), {
+                addSuffix: true,
+              })}
             </span>
           </div>
         </div>
-        {}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -123,9 +127,9 @@ export function PostCard({
       </CardHeader>
       <CardContent className="space-y-4">
         <p>{content}</p>
-        {image ? (
+        {image_url ? (
           <Image
-            src={image}
+            src={image_url}
             alt="Post content"
             className="rounded-lg w-full object-cover max-h-96"
             height={400}
@@ -158,8 +162,8 @@ export function PostCard({
           </div>
         )}
         <div className="flex items-center justify-between text-sm text-gray-500">
-          <span>{likes} likes</span>
-          <span>{comments.length} comments</span>
+          <span>{likesCount} likes</span>
+          <span>{commentsList.length} comments</span>
         </div>
       </CardContent>
       <Separator />
@@ -184,16 +188,20 @@ export function PostCard({
           </Button>
         </div>
         <div className="space-y-6 w-full">
-          {comments.map((comment) => (
+          {commentsList.map((comment) => (
             <div key={comment.id} className="flex items-start gap-2">
               <Avatar className="w-8 h-8">
-                <AvatarFallback>{comment.user.charAt(0)}</AvatarFallback>
+                <AvatarFallback>
+                  {comment.profiles[0]?.full_name?.charAt(0) || "C"}
+                </AvatarFallback>
               </Avatar>
               <div className="flex flex-col w-full">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-sm">{comment.user}</span>
+                  <span className="font-semibold text-sm">
+                    {comment.profiles[0]?.full_name}
+                  </span>
                   <span className="text-xs text-gray-500">
-                    {formatDistanceToNow(comment.timestamp, {
+                    {formatDistanceToNow(new Date(comment.created_at), {
                       addSuffix: true,
                     })}
                   </span>

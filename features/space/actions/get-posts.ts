@@ -1,11 +1,12 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { QueryData } from "@supabase/supabase-js";
 
 export const getPosts = async () => {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  const postQuery = supabase
     .from("posts")
     .select(
       `
@@ -13,23 +14,23 @@ export const getPosts = async () => {
       content,
       image_url,
       created_at,
-      profiles:user_id(full_name, avatar_url),
+      profiles:profiles(full_name, avatar_url),
       likes:likes(count),
       comments:comments(
         id,
         content,
         created_at,
-        profiles:user_id(full_name, avatar_url)
+        profiles:profiles(full_name, avatar_url)
       )
     `,
     )
     .order("created_at", { ascending: false });
 
+  const { data, error } = await postQuery;
+
   if (error) {
     throw new Error(error.message);
   }
-
-  console.log(data);
 
   return data;
 };
