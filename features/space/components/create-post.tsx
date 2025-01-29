@@ -74,6 +74,8 @@ export function CreatePost() {
                       placeholder="What's on your mind?"
                       {...field}
                       disabled={isPending}
+                      className="whitespace-pre-wrap"
+                      rows={5}
                     />
                   </FormControl>
                   <FormMessage />

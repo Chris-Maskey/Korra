@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { startTransition, useOptimistic, useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import {
   Heart,
@@ -8,7 +8,6 @@ import {
   Send,
   HandCoins,
   EllipsisIcon,
-  Pencil,
   Trash2,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,46 +27,77 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useDeletePost } from "../hooks/use-delete-post";
+import { cn } from "@/lib/utils";
+import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
+import { useLikePost } from "../hooks/use-like-post";
+import { Comment, PostCardType } from "../types";
 
 export function PostCard({
+  id,
   content,
   image_url,
   created_at,
   profiles,
   likes,
   comments,
-}: any) {
-  const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(likes.count || 0); // Access count directly
-  const [commentsList, setCommentsList] = useState(comments);
-  const [newComment, setNewComment] = useState("");
+}: PostCardType) {
+  const { mutateAsync, isPending: deletePending } = useDeletePost();
+  const { data: user } = useCurrentUser();
+  const { mutateAsync: likePost } = useLikePost();
 
-  const handleLike = () => {
-    setLikesCount(isLiked ? likesCount - 1 : likesCount + 1);
-    setIsLiked(!isLiked);
+  const [commentsList, setCommentsList] = useState<Comment[]>(comments);
+  const [newComment, setNewComment] = useState<string>("");
+
+  const likeUser = likes.some((like) => like.user_id === user?.id);
+
+  const [optimisticLike, setOptimisticLike] = useOptimistic(
+    { isLiked: likeUser, likesCount: likes.length },
+    (currentState) => ({
+      isLiked: !currentState.isLiked,
+      likesCount: currentState.isLiked
+        ? Math.max(0, currentState.likesCount - 1) // Ensure count doesn't go negative
+        : currentState.likesCount + 1,
+    }),
+  );
+
+  // const handleComment = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (newComment.trim()) {
+  //     const comment = {
+  //       id: (commentsList.length + 1).toString(),
+  //       content: newComment,
+  //       created_at: new Date().toISOString(),
+  //       profiles: [{ full_name: profiles?.full_name, avatar_url: null }], // Replace with actual user data
+  //     };
+  //     setCommentsList([...commentsList, comment]);
+  //     setNewComment("");
+  //   }
+  // };
+
+  const deletePost = async (postId: string) => {
+    await mutateAsync(postId);
   };
 
-  const handleComment = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newComment.trim()) {
-      const comment = {
-        id: (commentsList.length + 1).toString(),
-        content: newComment,
-        created_at: new Date().toISOString(),
-        profiles: [{ full_name: "Current User", avatar_url: null }], // Replace with actual user data
-      };
-      setCommentsList([...commentsList, comment]);
-      setNewComment("");
-    }
+  const handleLikePost = async () => {
+    startTransition(() => {
+      setOptimisticLike(id);
+    });
+    await likePost(id);
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-none">
+    <Card
+      className={cn(
+        "w-full max-w-2xl mx-auto shadow-none",
+        deletePending && "opacity-50",
+      )}
+    >
       <CardHeader className="flex flex-row items-center justify-between">
         <div className="flex items-center gap-4">
           <Avatar>
             <AvatarImage
-              src={profiles?.avatar_url || "/default-avatar.png"}
+              src={profiles?.avatar_url ? profiles.avatar_url : ""}
               alt={profiles?.full_name || "User"}
             />
             <AvatarFallback>
@@ -77,24 +107,26 @@ export function PostCard({
           <div className="flex flex-col">
             <span className="font-semibold">{profiles?.full_name}</span>
             <span className="text-sm text-gray-500">
-              {formatDistanceToNow(new Date(created_at!.toString()), {
+              {formatDistanceToNow(new Date(created_at), {
                 addSuffix: true,
               })}
             </span>
           </div>
         </div>
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <EllipsisIcon />
-            </Button>
-          </DropdownMenuTrigger>
+          {profiles?.id === user?.id && (
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <EllipsisIcon />
+              </Button>
+            </DropdownMenuTrigger>
+          )}
           <DropdownMenuContent className="w-44" align="end" forceMount>
-            <DropdownMenuItem className="cursor-pointer text-xs">
-              <Pencil className="mr-1 size-1" />
-              <span>Edit</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer text-xs">
+            <DropdownMenuItem
+              className="cursor-pointer text-xs"
+              onClick={() => deletePost(id)}
+              disabled={deletePending}
+            >
               <Trash2 className="mr-1 size-1" />
               <span>Delete</span>
             </DropdownMenuItem>
@@ -102,8 +134,8 @@ export function PostCard({
         </DropdownMenu>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p>{content}</p>
-        {image_url ? (
+        <p className="preserve-whitespace">{content}</p>
+        {image_url && (
           <Image
             src={image_url}
             alt="Post content"
@@ -112,33 +144,9 @@ export function PostCard({
             width={600}
             quality={100}
           />
-        ) : (
-          <div className="flex items-center justify-center w-full min-h-96 h-full text-gray-500">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 animate-spin text-rose-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8v8H4z"
-              />
-            </svg>
-          </div>
         )}
         <div className="flex items-center justify-between text-sm text-gray-500">
-          <span>{likesCount} likes</span>
+          <span>{optimisticLike.likesCount} likes</span>
           <span>{commentsList.length} comments</span>
         </div>
       </CardContent>
@@ -148,33 +156,34 @@ export function PostCard({
           <Button
             variant="ghost"
             size="sm"
-            onClick={handleLike}
-            className={isLiked ? "text-rose-600" : ""}
+            onClick={handleLikePost}
+            className={optimisticLike.isLiked ? "text-rose-600" : ""}
+            disabled={deletePending}
           >
             <Heart className="w-5 h-5 mr-2" />
             Like
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button disabled={deletePending} variant="ghost" size="sm">
             <MessageCircle className="w-5 h-5 mr-2" />
             Comment
           </Button>
-          <Button variant="ghost" size="sm">
+          <Button variant="ghost" size="sm" disabled={deletePending}>
             <HandCoins className="w-5 h-5 mr-2" />
             Donate
           </Button>
         </div>
         <div className="space-y-6 w-full">
-          {commentsList.map((comment) => (
+          {commentsList.map((comment: Comment) => (
             <div key={comment.id} className="flex items-start gap-2">
               <Avatar className="w-8 h-8">
                 <AvatarFallback>
-                  {comment.profiles[0]?.full_name?.charAt(0) || "C"}
+                  {comment.profiles?.full_name?.charAt(0) || "C"}
                 </AvatarFallback>
               </Avatar>
               <div className="flex flex-col w-full">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-sm">
-                    {comment.profiles[0]?.full_name}
+                    {comment.profiles?.full_name}
                   </span>
                   <span className="text-xs text-gray-500">
                     {formatDistanceToNow(new Date(comment.created_at), {
@@ -187,10 +196,7 @@ export function PostCard({
             </div>
           ))}
         </div>
-        <form
-          onSubmit={handleComment}
-          className="flex items-center w-full gap-2"
-        >
+        <form className="flex items-center w-full gap-2">
           <Input
             type="text"
             placeholder="Write a comment..."

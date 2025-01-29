@@ -59,9 +59,7 @@ export const FeedPage = () => {
               </div>
             ) : hasNextPage ? (
               <p className="text-gray-500">Load more posts...</p>
-            ) : (
-              <p className="text-gray-500">No more posts to load</p>
-            )}
+            ) : null}
           </div>
         </>
       )}

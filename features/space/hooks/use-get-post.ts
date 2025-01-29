@@ -1,4 +1,3 @@
-// app/hooks/use-get-post.ts
 "use client";
 
 import { useInfiniteQuery } from "@tanstack/react-query";

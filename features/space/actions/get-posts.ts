@@ -2,6 +2,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { PostCardType } from "../types";
 
 export const getPosts = async ({
   page = 1,
@@ -22,8 +23,8 @@ export const getPosts = async ({
       content,
       image_url,
       created_at,
-      profiles:profiles(full_name, avatar_url),
-      likes:likes(count),
+      profiles:profiles(id,full_name, avatar_url),
+      likes:likes(id, user_id),
       comments:comments(
         id,
         content,

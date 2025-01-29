@@ -89,3 +89,8 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+.preserve-whitespace {
+  white-space: pre-wrap; /* Preserve both spaces and line breaks */
+  word-wrap: break-word; /* Prevent overflow */
+}

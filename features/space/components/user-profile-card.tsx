@@ -106,15 +106,17 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
           <CardContent>
             <div className="bg-muted w-full flex items-center justify-between p-3 rounded-md">
               <div className="w-1/3 text-center">
-                <h3 className="text-[0.95rem] font-medium text-center">4600</h3>
+                <h3 className="text-[1rem] font-medium text-center tracking-tight">
+                  4600
+                </h3>
                 <span className="text-xs text-muted-foreground">Followers</span>
               </div>
               <div className="w-1/3 text-center">
-                <h3 className="text-[0.95rem] font-medium text-center">2600</h3>
+                <h3 className="text-[1rem] font-medium text-center">2600</h3>
                 <span className="text-xs text-muted-foreground">Following</span>
               </div>
               <div className="w-1/3 text-center">
-                <h3 className="text-[0.95rem] font-medium text-center">142</h3>
+                <h3 className="text-[1rem] font-medium text-center">142</h3>
                 <span className="text-xs text-muted-foreground">Posts</span>
               </div>
             </div>

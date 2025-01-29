@@ -5,24 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Bell, Home, MessageCircle, Search, Origami } from "lucide-react";
 import { UserMenu } from "./user-menu";
-import { NextFont } from "next/dist/compiled/@next/font";
 import { usePathname } from "next/navigation";
 
-type NavbarProps = {
-  pacifico: NextFont;
-};
-
-export function Navbar({ pacifico }: NavbarProps) {
+export function Navbar() {
   const pathname = usePathname();
 
   return (
     <nav className="border-b">
       <div className="flex h-16 items-center px-4 container mx-auto">
         <Link href="/space" className="mr-6 flex items-center space-x-2 ">
-          <Origami className="text-primary" />
-          <span className={`text-2xl font-bold ${pacifico.className}`}>
-            Korra
-          </span>
+          <Origami className="text-primary/70 hover:text-primary duration-500" />
         </Link>
         <div className="hidden md:flex flex-1 justify-center">
           <form className="w-full max-w-sm">
