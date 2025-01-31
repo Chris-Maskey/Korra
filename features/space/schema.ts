@@ -7,3 +7,7 @@ export const postSchema = z.object({
     .max(2000, "Content must be less than 2000 characters"),
   image: z.instanceof(File).optional(),
 });
+
+export const commentSchema = z.object({
+  content: z.string().min(1, "Content is required"),
+});

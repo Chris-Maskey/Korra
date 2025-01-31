@@ -1,12 +1,10 @@
-// app/actions/get-posts.ts
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { PostCardType } from "../types";
 
 export const getPosts = async ({
   page = 1,
-  pageSize = 10,
+  pageSize = 5,
 }: {
   page?: number;
   pageSize?: number;

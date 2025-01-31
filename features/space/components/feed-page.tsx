@@ -6,7 +6,7 @@ import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 import { useGetPosts } from "../hooks/use-get-post";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PostCard } from "./post-card";
+import { PostCard } from "./post-card/post-card";
 
 export const FeedPage = () => {
   const { ref, inView } = useInView();

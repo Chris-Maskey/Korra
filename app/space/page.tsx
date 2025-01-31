@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import { CreatePost } from "@/features/space/components/create-post";
 import { FeedPage } from "@/features/space/components/feed-page";
-import { PostCard } from "@/features/space/components/post-card";
+import { PostCard } from "@/features/space/components/post-card/post-card";
 
 const samplePost = {
   user: {
