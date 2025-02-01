@@ -15,7 +15,7 @@ import {
 import { useCreateComment } from "../../hooks/use-create-comment";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Send } from "lucide-react";
+import { Loader2, Maximize2, Send } from "lucide-react";
 import { startTransition, useOptimistic, useState } from "react";
 import { Tables } from "@/database.types";
 
@@ -23,11 +23,17 @@ type PostCommentProps = {
   comments: Comment[];
   postId: string;
   user: Tables<"profiles"> | undefined;
+  setNumberofComments: (number: number) => void;
 };
 
 type CommentSchemaType = z.infer<typeof commentSchema>;
 
-export const PostComment = ({ comments, postId, user }: PostCommentProps) => {
+export const PostComment = ({
+  comments,
+  postId,
+  user,
+  setNumberofComments,
+}: PostCommentProps) => {
   const { mutateAsync: createPost, isPending } = useCreateComment(postId);
 
   const form = useForm<CommentSchemaType>({
@@ -38,7 +44,7 @@ export const PostComment = ({ comments, postId, user }: PostCommentProps) => {
   });
 
   const [state, setState] = useState({
-    comments: comments,
+    comments: comments.length > 3 ? comments.slice(0, 3) : comments,
     commentsCount: comments.length,
   });
 
@@ -47,7 +53,7 @@ export const PostComment = ({ comments, postId, user }: PostCommentProps) => {
     (prev, action: { comment: Comment }) => {
       return {
         ...prev,
-        comments: [...prev.comments, action.comment],
+        comments: [action.comment, ...prev.comments],
         commentsCount: prev.commentsCount + 1,
       };
     },
@@ -71,10 +77,12 @@ export const PostComment = ({ comments, postId, user }: PostCommentProps) => {
       setState((prev) => {
         return {
           ...prev,
-          comments: [...prev.comments, optimisticComment],
+          comments: [optimisticComment, ...prev.comments],
           commentsCount: prev.commentsCount + 1,
         };
       });
+
+      setNumberofComments(state.commentsCount + 1);
     });
     form.reset();
     await createPost(data);
@@ -146,6 +154,17 @@ export const PostComment = ({ comments, postId, user }: PostCommentProps) => {
               </div>
             </div>
           ))}
+          {comments.length > 3 && (
+            <Button
+              type="button"
+              size={"sm"}
+              variant={"ghost"}
+              className="text-xs flex items-center gap-2 w-full"
+            >
+              <Maximize2 />
+              View all comments
+            </Button>
+          )}
         </div>
       )}
     </>

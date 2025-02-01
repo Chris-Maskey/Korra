@@ -2,10 +2,11 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { postSchema } from "../schema";
+import { Tables } from "@/database.types";
 
 export const createPost = async (
   data: (typeof postSchema)["_output"],
-): Promise<void> => {
+): Promise<Tables<"posts">> => {
   const supabase = await createClient();
 
   const { data: user, error: authError } = await supabase.auth.getUser();

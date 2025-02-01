@@ -6,6 +6,8 @@ html,
 body,
 :root {
   height: 100%;
+  overflow: scroll;
+  overflow-x: hidden;
 }
 
 @layer base {
@@ -93,4 +95,9 @@ body,
 .preserve-whitespace {
   white-space: pre-wrap; /* Preserve both spaces and line breaks */
   word-wrap: break-word; /* Prevent overflow */
+}
+
+::-webkit-scrollbar {
+  width: 0; /* Remove scrollbar space */
+  background: transparent; /* Optional: just make scrollbar invisible */
 }

@@ -12,6 +12,7 @@ type PostActionsProps = {
   deletePending: boolean;
   user: Tables<"profiles"> | undefined;
   likes: Like[];
+  numberOfComments: number;
 };
 
 const PostActions = ({
@@ -19,6 +20,7 @@ const PostActions = ({
   deletePending,
   user,
   likes,
+  numberOfComments,
 }: PostActionsProps) => {
   const { mutateAsync: likePost } = useLikePost();
 
@@ -65,15 +67,15 @@ const PostActions = ({
         variant="ghost"
         size="sm"
         onClick={handleLikePost}
-        className={optimisticLike.isLiked ? "text-rose-600" : ""}
+        className={optimisticLike.isLiked ? "text-primary" : ""}
         disabled={deletePending}
       >
-        <Heart className="w-5 h-5 mr-2" />
-        Like
+        <Heart className="w-5 h-5 mr-1" />
+        {optimisticLike.likes} Like
       </Button>
       <Button disabled={deletePending} variant="ghost" size="sm">
-        <MessageCircle className="w-5 h-5 mr-2" />
-        Comment
+        <MessageCircle className="w-5 h-5 mr-1" />
+        {numberOfComments} Comment
       </Button>
       <Button variant="ghost" size="sm" disabled={deletePending}>
         <HandCoins className="w-5 h-5 mr-2" />

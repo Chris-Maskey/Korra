@@ -1,25 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { Send } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
-import { Comment, PostCardType } from "../../types";
+import { PostCardType } from "../../types";
 import PostActions from "./post-interactions";
 import { PostHeader } from "./post-header";
-import { CommentsList, PostComment } from "./post-comments-list";
-import PostCardForm from "./post-comment-form";
+import { PostComment } from "./post-comments-list";
 
 export function PostCard({
   id,
@@ -34,12 +30,11 @@ export function PostCard({
 
   const [deletePending, setDeletePending] = useState<boolean>(false);
 
+  const [numberofComments, setNumberofComments] = useState(comments.length);
+
   return (
     <Card
-      className={cn(
-        "w-full max-w-2xl mx-auto shadow-none",
-        deletePending && "opacity-50",
-      )}
+      className={cn("w-full max-w-2xl mx-auto ", deletePending && "opacity-50")}
     >
       <CardHeader className="flex flex-row items-center justify-between">
         <PostHeader
@@ -62,10 +57,6 @@ export function PostCard({
             quality={100}
           />
         )}
-        <div className="flex items-center justify-between text-sm text-gray-500">
-          <span>{likes.length} likes</span>
-          <span>{comments.length} comments</span>
-        </div>
       </CardContent>
       <Separator />
       <CardFooter className="flex flex-col mt-2 gap-4">
@@ -74,8 +65,14 @@ export function PostCard({
           deletePending={deletePending}
           user={user}
           likes={likes}
+          numberOfComments={numberofComments}
         />
-        <PostComment comments={comments} postId={id} user={user} />
+        <PostComment
+          comments={comments}
+          postId={id}
+          user={user}
+          setNumberofComments={setNumberofComments}
+        />
       </CardFooter>
     </Card>
   );

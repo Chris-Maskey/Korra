@@ -29,9 +29,10 @@ export const getPosts = async ({
         created_at,
         profiles:profiles(full_name, avatar_url)
       )
-    `,
+      `,
       { count: "exact" },
     )
+    .order("created_at", { referencedTable: "comments", ascending: false })
     .order("created_at", { ascending: false })
     .range(start, end);
 

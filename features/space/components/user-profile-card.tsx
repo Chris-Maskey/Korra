@@ -32,7 +32,7 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
   }
 
   return (
-    <Card className="w-full max-w-xs shadow-none">
+    <Card className="w-full max-w-xs">
       <CardHeader className="flex flex-col items-center space-y-4">
         <div
           className={cn(

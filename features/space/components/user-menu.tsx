@@ -43,7 +43,7 @@ export function UserMenu() {
               {user?.full_name}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              user@example.com
+              {user?.user_name}
             </p>
           </div>
         </DropdownMenuLabel>

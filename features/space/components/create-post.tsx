@@ -60,7 +60,7 @@ export function CreatePost() {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto shadow-none">
+    <Card className="w-full max-w-2xl mx-auto">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(createPost)}>
           <CardContent className="p-4 space-y-4">
@@ -75,7 +75,7 @@ export function CreatePost() {
                       {...field}
                       disabled={isPending}
                       className="whitespace-pre-wrap"
-                      rows={5}
+                      rows={3}
                     />
                   </FormControl>
                   <FormMessage />
