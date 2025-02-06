@@ -19,18 +19,29 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useCreatePost } from "../hooks/use-create-post";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@radix-ui/react-tooltip";
+import { TooltipContent } from "@/components/ui/tooltip";
 
 type PostSchemaType = z.infer<typeof postSchema>;
 
 export function CreatePost() {
-  const { mutateAsync, isPending } = useCreatePost();
-
   const form = useForm<PostSchemaType>({
     resolver: zodResolver(postSchema),
     defaultValues: {
       content: "",
       image: undefined,
+      type: "NORMAL",
     },
+  });
+
+  const { mutateAsync, isPending } = useCreatePost({
+    feedType: form.getValues("type"),
   });
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -66,6 +77,41 @@ export function CreatePost() {
           <CardContent className="p-4 space-y-4">
             <FormField
               control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem className="flex items-center justify-end space-x-2">
+                  <FormControl>
+                    <div className="flex text-xs items-center space-x-2">
+                      <TooltipProvider>
+                        <Tooltip>
+                          <Switch
+                            id="post-type-toggle"
+                            checked={field.value === "HELP"}
+                            onCheckedChange={(checked) =>
+                              field.onChange(checked ? "HELP" : "NORMAL")
+                            }
+                          />
+                          <TooltipTrigger asChild>
+                            <Label
+                              htmlFor="post-type-toggle"
+                              className="text-xs"
+                            >
+                              Help
+                            </Label>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Toggle to create a help post</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="content"
               render={({ field }) => (
                 <FormItem>
@@ -82,6 +128,7 @@ export function CreatePost() {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="image"

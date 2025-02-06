@@ -13,10 +13,10 @@ const MySpacePage = () => {
           <TabsTrigger value="help">Help</TabsTrigger>
         </TabsList>
         <TabsContent value="latest">
-          <FeedPage />
+          <FeedPage feedType="NORMAL" />
         </TabsContent>
         <TabsContent value="help">
-          <FeedPage />
+          <FeedPage feedType="HELP" />
         </TabsContent>
       </Tabs>
     </section>

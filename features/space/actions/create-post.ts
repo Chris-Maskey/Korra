@@ -43,6 +43,7 @@ export const createPost = async (
       user_id: user.user.id,
       content: data.content,
       image_url: imageUrl,
+      type: data.type,
     })
     .select()
     .single();

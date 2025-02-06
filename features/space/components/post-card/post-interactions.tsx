@@ -13,6 +13,7 @@ type PostActionsProps = {
   user: Tables<"profiles"> | undefined;
   likes: Like[];
   numberOfComments: number;
+  type: "NORMAL" | "HELP";
 };
 
 const PostActions = ({
@@ -21,6 +22,7 @@ const PostActions = ({
   user,
   likes,
   numberOfComments,
+  type,
 }: PostActionsProps) => {
   const { mutateAsync: likePost } = useLikePost();
 
@@ -77,7 +79,11 @@ const PostActions = ({
         <MessageCircle className="w-5 h-5 mr-1" />
         {numberOfComments} Comment
       </Button>
-      <Button variant="ghost" size="sm" disabled={deletePending}>
+      <Button
+        variant="ghost"
+        size="sm"
+        disabled={deletePending || type === "NORMAL"}
+      >
         <HandCoins className="w-5 h-5 mr-2" />
         Donate
       </Button>

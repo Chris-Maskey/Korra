@@ -5,12 +5,16 @@ import { toast } from "sonner";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 import { useGetPosts } from "../hooks/use-get-post";
-import { Skeleton } from "@/components/ui/skeleton";
 import { PostCard } from "./post-card/post-card";
 import { PostCardType } from "../types";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
 
-export const FeedPage = () => {
+type FeedPageProps = {
+  feedType: "NORMAL" | "HELP" | undefined;
+};
+
+export const FeedPage = ({ feedType }: FeedPageProps) => {
   const { ref, inView } = useInView();
   const {
     data,
@@ -19,7 +23,7 @@ export const FeedPage = () => {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useGetPosts();
+  } = useGetPosts({ postType: feedType });
 
   useEffect(() => {
     if (inView && hasNextPage) {

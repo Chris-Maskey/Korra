@@ -90,6 +90,7 @@ export type Database = {
           created_at: string | null
           id: string
           image_url: string | null
+          type: Database["public"]["Enums"]["post_type"]
           user_id: string
         }
         Insert: {
@@ -97,6 +98,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           image_url?: string | null
+          type?: Database["public"]["Enums"]["post_type"]
           user_id: string
         }
         Update: {
@@ -104,6 +106,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           image_url?: string | null
+          type?: Database["public"]["Enums"]["post_type"]
           user_id?: string
         }
         Relationships: [
@@ -151,6 +154,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      post_type: "NORMAL" | "HELP"
       user_role: "BASIC" | "PREMIUM" | "ORGANIZATION"
     }
     CompositeTypes: {

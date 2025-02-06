@@ -2,7 +2,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost } from "../actions/create-post";
 import { toast } from "sonner";
 
-export const useCreatePost = () => {
+export const useCreatePost = ({
+  feedType,
+}: {
+  feedType: "NORMAL" | "HELP";
+}) => {
   const queryClient = useQueryClient();
   const mutate = useMutation({
     mutationFn: createPost,
@@ -17,7 +21,7 @@ export const useCreatePost = () => {
       toast.success("Post created successfully");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["posts", feedType] });
     },
   });
 

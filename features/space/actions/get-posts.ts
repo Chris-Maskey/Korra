@@ -4,10 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 
 export const getPosts = async ({
   page = 1,
-  pageSize = 5,
+  pageSize = 2,
+  postType = "NORMAL",
 }: {
   page?: number;
   pageSize?: number;
+  postType?: "NORMAL" | "HELP";
 }) => {
   const supabase = await createClient();
   const start = (page - 1) * pageSize;
@@ -21,6 +23,7 @@ export const getPosts = async ({
       content,
       image_url,
       created_at,
+      type,
       profiles:profiles(id,full_name, avatar_url),
       likes:likes(id, user_id),
       comments:comments(
@@ -32,6 +35,7 @@ export const getPosts = async ({
       `,
       { count: "exact" },
     )
+    .eq("type", postType)
     .order("created_at", { referencedTable: "comments", ascending: false })
     .order("created_at", { ascending: false })
     .range(start, end);

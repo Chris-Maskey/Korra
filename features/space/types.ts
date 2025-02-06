@@ -24,4 +24,5 @@ export type PostCardType = {
   profiles: Profile | null;
   likes: Like[];
   comments: Comment[];
+  type: "NORMAL" | "HELP";
 };

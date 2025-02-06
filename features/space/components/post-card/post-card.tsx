@@ -25,6 +25,7 @@ export function PostCard({
   profiles,
   likes,
   comments,
+  type,
 }: PostCardType) {
   const { data: user } = useCurrentUser();
 
@@ -66,6 +67,7 @@ export function PostCard({
           user={user}
           likes={likes}
           numberOfComments={numberofComments}
+          type={type}
         />
         <PostComment
           comments={comments}
