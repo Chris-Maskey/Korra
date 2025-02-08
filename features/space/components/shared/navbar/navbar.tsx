@@ -3,17 +3,22 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bell, Home, MessageCircle, Search, Origami } from "lucide-react";
-import { UserMenu } from "./user-menu";
-import { usePathname } from "next/navigation";
+import {
+  Bell,
+  Home,
+  MessageCircle,
+  Search,
+  Origami,
+  PawPrint,
+} from "lucide-react";
+import { UserMenu } from "../user-menu";
+import NavbarButton from "./navbar-butons";
 
 export function Navbar() {
-  const pathname = usePathname();
-
   return (
     <nav className="border-b">
       <div className="flex h-16 items-center px-4 container mx-auto">
-        <Link href="/space" className="mr-6 flex items-center space-x-2 ">
+        <Link href="/space/feed" className="mr-6 flex items-center space-x-2 ">
           <Origami className="text-primary/70 hover:text-primary duration-500" />
         </Link>
         <div className="hidden md:flex flex-1 justify-center">
@@ -33,21 +38,22 @@ export function Navbar() {
             <Search className="h-5 w-5" />
             <span className="sr-only">Search</span>
           </Button>
-          <Button
-            variant={pathname === "/space" ? "default" : "ghost"}
-            size="icon"
-          >
-            <Home className="h-5 w-5" />
-            <span className="sr-only">Home</span>
-          </Button>
-          <Button variant="ghost" size="icon">
-            <MessageCircle className="h-5 w-5" />
-            <span className="sr-only">Messages</span>
-          </Button>
-          <Button variant="ghost" size="icon">
-            <Bell className="h-5 w-5" />
-            <span className="sr-only">Notifications</span>
-          </Button>
+          <NavbarButton title="Home" Icon={Home} redirectionUrl="/space/feed" />
+          <NavbarButton
+            title="Adopt"
+            Icon={PawPrint}
+            redirectionUrl="/space/adoption"
+          />
+          <NavbarButton
+            title="Messages"
+            Icon={MessageCircle}
+            redirectionUrl="/space/messages"
+          />
+          <NavbarButton
+            title="Notifications"
+            Icon={Bell}
+            redirectionUrl="/space/notifications"
+          />
           <UserMenu />
         </div>
       </div>

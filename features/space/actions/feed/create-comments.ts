@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { commentSchema } from "../schema";
+import { commentSchema } from "../../schema";
 
 export const createComment = async (
   postId: string,

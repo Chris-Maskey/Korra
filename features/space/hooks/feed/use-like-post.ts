@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { likePost } from "../actions/like-post";
+import { likePost } from "../../actions/feed/like-post";
 import { toast } from "sonner";
 
 export const useLikePost = () => {

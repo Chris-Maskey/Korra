@@ -3,9 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { HandCoins, Heart, MessageCircle } from "lucide-react";
 import { startTransition, useOptimistic, useState } from "react";
-import { useLikePost } from "../../hooks/use-like-post";
+import { useLikePost } from "../../../hooks/feed/use-like-post";
 import { Tables } from "@/database.types";
-import { Like } from "../../types";
+import { Like } from "../../../types";
 
 type PostActionsProps = {
   postId: string;

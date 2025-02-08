@@ -12,7 +12,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
-import { PostCardType } from "../../types";
+import { PostCardType } from "../../../types";
 import PostActions from "./post-interactions";
 import { PostHeader } from "./post-header";
 import { PostComment } from "./post-comments-list";

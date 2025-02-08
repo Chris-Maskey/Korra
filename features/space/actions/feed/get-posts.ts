@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
+import { FeedType } from "../../types";
 
 export const getPosts = async ({
   page = 1,
@@ -9,7 +10,7 @@ export const getPosts = async ({
 }: {
   page?: number;
   pageSize?: number;
-  postType?: "NORMAL" | "HELP";
+  postType?: FeedType;
 }) => {
   const supabase = await createClient();
   const start = (page - 1) * pageSize;

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getPostById } from "../actions/get-post-by-id";
+import { getPostById } from "../../actions/feed/get-post-by-id";
 
 export const useGetPostById = (postId: string) => {
   const query = useQuery({

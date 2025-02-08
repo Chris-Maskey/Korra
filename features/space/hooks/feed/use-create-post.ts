@@ -1,12 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPost } from "../actions/create-post";
+import { createPost } from "../../actions/feed/create-post";
 import { toast } from "sonner";
+import { FeedType } from "../../types";
 
-export const useCreatePost = ({
-  feedType,
-}: {
-  feedType: "NORMAL" | "HELP";
-}) => {
+export const useCreatePost = ({ feedType }: { feedType: FeedType }) => {
   const queryClient = useQueryClient();
   const mutate = useMutation({
     mutationFn: createPost,

@@ -26,3 +26,5 @@ export type PostCardType = {
   comments: Comment[];
   type: "NORMAL" | "HELP";
 };
+
+export type FeedType = "NORMAL" | "HELP" | "ADOPTION";

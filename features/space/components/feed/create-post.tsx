@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ImagePlus, Loader2, Send, X } from "lucide-react";
 import * as z from "zod";
-import { postSchema } from "../schema";
+import { postSchema } from "../../schema";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +18,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { useCreatePost } from "../hooks/use-create-post";
+import { useCreatePost } from "../../hooks/feed/use-create-post";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import {
@@ -96,11 +96,11 @@ export function CreatePost() {
                               htmlFor="post-type-toggle"
                               className="text-xs"
                             >
-                              Help
+                              Rescue{" "}
                             </Label>
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Toggle to create a help post</p>
+                            <p>Toggle to create a rescue & support post</p>
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>

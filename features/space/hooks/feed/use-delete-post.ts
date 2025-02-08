@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deletePost } from "../actions/delete-post";
+import { deletePost } from "../../actions/feed/delete-post";
 import { toast } from "sonner";
 
 export const useDeletePost = () => {

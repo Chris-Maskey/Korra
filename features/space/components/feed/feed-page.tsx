@@ -4,14 +4,14 @@
 import { toast } from "sonner";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
-import { useGetPosts } from "../hooks/use-get-post";
+import { useGetPosts } from "../../hooks/feed/use-get-post";
 import { PostCard } from "./post-card/post-card";
-import { PostCardType } from "../types";
+import { FeedType, PostCardType } from "../../types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Loader2 } from "lucide-react";
 
 type FeedPageProps = {
-  feedType: "NORMAL" | "HELP" | undefined;
+  feedType: FeedType;
 };
 
 export const FeedPage = ({ feedType }: FeedPageProps) => {

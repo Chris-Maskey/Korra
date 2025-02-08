@@ -1,8 +1,8 @@
 import * as z from "zod";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Comment } from "../../types";
+import { Comment } from "../../../types";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
-import { commentSchema } from "../../schema";
+import { commentSchema } from "../../../schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -12,7 +12,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { useCreateComment } from "../../hooks/use-create-comment";
+import { useCreateComment } from "../../../hooks/feed/use-create-comment";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2, Maximize2, Send } from "lucide-react";

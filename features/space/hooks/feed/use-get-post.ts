@@ -1,9 +1,10 @@
 "use client";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { getPosts } from "../actions/get-posts";
+import { getPosts } from "../../actions/feed/get-posts";
+import { FeedType } from "../../types";
 
-export const useGetPosts = ({ postType }: { postType?: "NORMAL" | "HELP" }) => {
+export const useGetPosts = ({ postType }: { postType?: FeedType }) => {
   return useInfiniteQuery({
     queryKey: ["posts", postType],
     queryFn: async ({ pageParam = 1 }) => {

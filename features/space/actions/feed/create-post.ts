@@ -1,7 +1,7 @@
 "use server";
 
 import { createClient } from "@/lib/supabase/server";
-import { postSchema } from "../schema";
+import { postSchema } from "../../schema";
 import { Tables } from "@/database.types";
 
 export const createPost = async (

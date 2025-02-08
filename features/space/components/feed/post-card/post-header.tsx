@@ -8,8 +8,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { EllipsisIcon, Trash2 } from "lucide-react";
-import { Profile } from "../../types";
-import { useDeletePost } from "../../hooks/use-delete-post";
+import { Profile } from "../../../types";
+import { useDeletePost } from "../../../hooks/feed/use-delete-post";
 import { useEffect } from "react";
 
 type PostHeaderProps = {

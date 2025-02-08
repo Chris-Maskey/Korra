@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
-import { createComment } from "../actions/create-comments";
-import { commentSchema } from "../schema";
+import { createComment } from "../../actions/feed/create-comments";
+import { commentSchema } from "../../schema";
 import { toast } from "sonner";
 
 export const useCreateComment = (postId: string) => {
