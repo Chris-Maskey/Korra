@@ -9,6 +9,50 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      adoption: {
+        Row: {
+          created_at: string | null
+          id: string
+          image_url: string
+          pet_age: number
+          pet_age_unit: Database["public"]["Enums"]["pet_age-Unit"] | null
+          pet_description: string
+          pet_name: string
+          pet_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          image_url: string
+          pet_age: number
+          pet_age_unit?: Database["public"]["Enums"]["pet_age-Unit"] | null
+          pet_description: string
+          pet_name: string
+          pet_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          image_url?: string
+          pet_age?: number
+          pet_age_unit?: Database["public"]["Enums"]["pet_age-Unit"] | null
+          pet_description?: string
+          pet_name?: string
+          pet_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "adoption_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
           content: string
@@ -154,7 +198,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      post_type: "NORMAL" | "HELP"
+      "pet_age-Unit": "months" | "years"
+      post_type: "NORMAL" | "HELP" | "ADOPTION"
       user_role: "BASIC" | "PREMIUM" | "ORGANIZATION"
     }
     CompositeTypes: {

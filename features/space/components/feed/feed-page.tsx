@@ -35,15 +35,14 @@ export const FeedPage = ({ feedType }: FeedPageProps) => {
     toast.error(error.message);
   }
 
-  // Flatten posts from all pages
   const posts = data?.pages.flatMap((page) => page.posts) || [];
 
   return (
     <div className="max-w-2xl mx-auto space-y-4">
       {isLoading ? (
         <div className="max-w-2xl mx-auto p-4 space-y-4">
-          <Skeleton className="h-80 w-full rounded-lg" />
-          <Skeleton className="h-80 w-full rounded-lg" />
+          <Skeleton className="h-96 w-full rounded-lg" />
+          <Skeleton className="h-96 w-full rounded-lg" />
         </div>
       ) : posts.length === 0 ? (
         <div className="max-w-2xl mx-auto p-4">
@@ -65,7 +64,8 @@ export const FeedPage = ({ feedType }: FeedPageProps) => {
             ) : hasNextPage ? (
               <p className="text-gray-500 flex items-center justify-center gap-2">
                 {" "}
-                <Loader2 className="size-4 animate-spin" /> Load more posts...
+                Loading more posts...{" "}
+                <Loader2 className="size-4 animate-spin" />
               </p>
             ) : null}
           </div>

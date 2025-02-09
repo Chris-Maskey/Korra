@@ -11,6 +11,7 @@ export const useCreatePost = ({ feedType }: { feedType: FeedType }) => {
       toast.loading("Creating post...");
     },
     onError: (error) => {
+      toast.dismiss();
       toast.error(error.message || "An unexpected error occurred");
     },
     onSuccess: () => {

@@ -1,3 +1,5 @@
+import { Database } from "@/database.types";
+
 export type Profile = {
   id: string;
   full_name: string | null;
@@ -28,3 +30,15 @@ export type PostCardType = {
 };
 
 export type FeedType = "NORMAL" | "HELP" | "ADOPTION";
+
+export type AdoptionPost = {
+  created_at: string | null;
+  id: string;
+  image_url: string;
+  pet_age: number;
+  pet_age_unit: Database["public"]["Enums"]["pet_age-Unit"] | null;
+  pet_description: string;
+  pet_name: string;
+  pet_type: string;
+  user_id: string;
+};

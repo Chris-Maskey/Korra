@@ -8,21 +8,15 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import { Heart, MessageCircle, Share } from "lucide-react";
+import { MessageCircle, Share } from "lucide-react";
+import { AdoptionPost } from "../../types";
 
-type AdoptionCardProps = {
-  name: string;
-  breed: string;
-  age: string;
-  description: string;
-};
-
-const AdoptionCard = ({ name, breed, age, description }: AdoptionCardProps) => {
+const AdoptionCard = ({ ...adoption }: AdoptionPost) => {
   return (
     <Card>
       <CardHeader className="p-0">
         <Image
-          src="/placeholder.svg"
+          src={adoption.image_url}
           alt="A cute dog sitting on a path"
           width={400}
           height={300}
@@ -32,16 +26,13 @@ const AdoptionCard = ({ name, breed, age, description }: AdoptionCardProps) => {
       <CardContent className="p-4">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-lg">{name}</h3>
+            <h3 className="font-semibold text-lg">{adoption.pet_name}</h3>
             <p className="text-sm text-muted-foreground">
-              {breed} • {age}
+              {adoption.pet_type} • {adoption.pet_age} {adoption.pet_age_unit}
             </p>
           </div>
-          <Button variant="ghost" size="icon">
-            <Heart className="w-4 h-4" />
-          </Button>
         </div>
-        <p className="mt-2 text-sm line-clamp-2">{description}</p>
+        <p className="mt-2 text-sm line-clamp-2">{adoption.pet_description}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0 flex gap-2">
         <Button className="flex-1">
