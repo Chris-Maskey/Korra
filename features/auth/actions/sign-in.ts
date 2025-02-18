@@ -18,5 +18,5 @@ export const signIn = async (data: (typeof signInSchema)["_output"]) => {
     throw new Error(error.message);
   }
 
-  return redirect("/space");
+  return redirect("/space/feed");
 };

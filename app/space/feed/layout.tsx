@@ -13,7 +13,7 @@ const FeedLayout = async ({ children }: FeedLayoutProps) => {
 
   return (
     <section className="flex items-start gap-8 py-8">
-      <div className="flex flex-col gap-4 w-full max-w-xs">
+      <div className="flex-col gap-4 hidden lg:flex w-full max-w-xs">
         <UserProfileCard state="expanded" profileId={user?.id} />
       </div>
       <section className="max-w-screen-md w-full">{children}</section>

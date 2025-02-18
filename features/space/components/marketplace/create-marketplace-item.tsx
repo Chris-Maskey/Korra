@@ -22,8 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
-import { adoptionSchema } from "../../schema";
-import { useCreateAdoption } from "../../hooks/adoption/use-create-adoption";
+import { marketplaceItemSchema } from "../../schema";
 import { useForm } from "react-hook-form";
 import {
   Select,
@@ -33,27 +32,45 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { useCreateMarketplaceItem } from "../../hooks/marketplace/use-create-marketplace-item";
 
-type CreateAdoptionSchemaType = z.infer<typeof adoptionSchema>;
+type CreateMarketplaceItemSchemaType = z.infer<typeof marketplaceItemSchema>;
 
-const CreateAdoptionDialog = () => {
-  const { mutateAsync, isPending } = useCreateAdoption();
+const getCurrencySymbol = (currency: string) => {
+  switch (currency) {
+    case "USD":
+      return "$";
+    case "EUR":
+      return "€";
+    case "GBP":
+      return "£";
+    case "JPY":
+      return "¥";
+    case "NPR":
+      return "रू";
+    default:
+      return "$";
+  }
+};
+
+const CreateMarketplaceItem = () => {
+  const { mutateAsync, isPending } = useCreateMarketplaceItem();
 
   const [open, setOpen] = useState<boolean>(false);
 
-  const form = useForm<CreateAdoptionSchemaType>({
-    resolver: zodResolver(adoptionSchema),
+  const form = useForm<CreateMarketplaceItemSchemaType>({
+    resolver: zodResolver(marketplaceItemSchema),
     defaultValues: {
-      petName: "",
-      petType: "",
-      petAge: 0,
-      petAgeUnit: "years",
-      petDescription: "",
-      petImage: undefined,
+      itemName: "",
+      itemType: "",
+      currency: "USD",
+      itemPrice: undefined,
+      itemDescription: "",
+      itemImage: undefined,
     },
   });
 
-  const onSubmit = (values: CreateAdoptionSchemaType) => {
+  const onSubmit = (values: CreateMarketplaceItemSchemaType) => {
     mutateAsync(values).then(() => {
       form.reset();
       setOpen(false);
@@ -65,14 +82,14 @@ const CreateAdoptionDialog = () => {
       <DialogTrigger asChild>
         <Button>
           <Plus className="w-4 h-4 mr-2" />
-          List for Adoption
+          List Marketplace Item
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Adoption Listing</DialogTitle>
+          <DialogTitle>Create Marketplace Listing</DialogTitle>
           <DialogDescription>
-            Fill out the details about the pet you want to put up for adoption.
+            Fill out the details about the item you want to put up for listing.
           </DialogDescription>
         </DialogHeader>
 
@@ -80,13 +97,13 @@ const CreateAdoptionDialog = () => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="petName"
+              name="itemName"
               disabled={isPending}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Pet Name</FormLabel>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter pet's name" {...field} />
+                    <Input placeholder="Enter item name" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -95,22 +112,22 @@ const CreateAdoptionDialog = () => {
 
             <FormField
               control={form.control}
-              name="petType"
+              name="itemType"
               disabled={isPending}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Pet Type</FormLabel>
+                  <FormLabel>Type</FormLabel>
                   <FormControl>
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="dog">Dog</SelectItem>
-                        <SelectItem value="cat">Cat</SelectItem>
-                        <SelectItem value="rabbit">Rabbit</SelectItem>
-                        <SelectItem value="bird">Bird</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="Food">Food</SelectItem>
+                        <SelectItem value="Toys">Toys</SelectItem>
+                        <SelectItem value="Accessories">Accessories</SelectItem>
+                        <SelectItem value="Grooming">Grooming</SelectItem>
+                        <SelectItem value="Health">Health</SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -121,38 +138,32 @@ const CreateAdoptionDialog = () => {
 
             <FormField
               control={form.control}
-              name="petAge"
+              name="itemPrice"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Age</FormLabel>
+                  <FormLabel>Price</FormLabel>
                   <div className="flex gap-2">
-                    <FormControl>
-                      <Input
-                        type="number"
-                        placeholder="Enter age"
-                        min={0}
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    </FormControl>
                     <FormField
                       control={form.control}
-                      name="petAgeUnit"
+                      name="currency"
                       render={({ field }) => (
-                        <FormItem className="w-[120px]">
+                        <FormItem className="w-[80px]">
                           <FormControl>
                             <Select
                               value={field.value}
                               onValueChange={field.onChange}
                             >
-                              <SelectTrigger>
-                                <SelectValue placeholder="Unit" />
+                              <SelectTrigger className="w-[80px]">
+                                <SelectValue>
+                                  {getCurrencySymbol(field.value)}
+                                </SelectValue>
                               </SelectTrigger>
                               <SelectContent>
-                                <SelectItem value="month">Month</SelectItem>
-                                <SelectItem value="months">Months</SelectItem>
-                                <SelectItem value="year">Year</SelectItem>
-                                <SelectItem value="years">Years</SelectItem>
+                                <SelectItem value="USD">$</SelectItem>
+                                <SelectItem value="EUR">€</SelectItem>
+                                <SelectItem value="GBP">£</SelectItem>
+                                <SelectItem value="JPY">¥</SelectItem>
+                                <SelectItem value="NPR">रू</SelectItem>
                               </SelectContent>
                             </Select>
                           </FormControl>
@@ -160,6 +171,18 @@ const CreateAdoptionDialog = () => {
                         </FormItem>
                       )}
                     />
+
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Enter price"
+                        min={0}
+                        step="0.01"
+                        {...field}
+                        value={field.value ?? ""}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
+                    </FormControl>
                   </div>
                   <FormMessage />
                 </FormItem>
@@ -168,14 +191,14 @@ const CreateAdoptionDialog = () => {
 
             <FormField
               control={form.control}
-              name="petDescription"
+              name="itemDescription"
               disabled={isPending}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Tell us about your pet..."
+                      placeholder="Tell us about your item..."
                       {...field}
                     />
                   </FormControl>
@@ -186,7 +209,7 @@ const CreateAdoptionDialog = () => {
 
             <FormField
               control={form.control}
-              name="petImage"
+              name="itemImage"
               disabled={isPending}
               render={({ field }) => (
                 <FormItem>
@@ -220,4 +243,4 @@ const CreateAdoptionDialog = () => {
   );
 };
 
-export default CreateAdoptionDialog;
+export default CreateMarketplaceItem;

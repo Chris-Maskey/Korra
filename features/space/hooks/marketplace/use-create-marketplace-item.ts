@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createAdoption } from "../../actions/adoption/create-adoption";
 import { toast } from "sonner";
+import { createMarketplaceItem } from "../../actions/marketplace/create-marketplace-item";
 
-export const useCreateAdoption = () => {
+export const useCreateMarketplaceItem = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: createAdoption,
+    mutationFn: createMarketplaceItem,
     onMutate: () => {
-      toast.loading("Creating adoption...");
+      toast.loading("Creating marketplace item...");
     },
     onError: (error) => {
       toast.dismiss();
@@ -15,8 +15,8 @@ export const useCreateAdoption = () => {
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Adoption created successfully");
-      queryClient.invalidateQueries({ queryKey: ["adoptions"] });
+      toast.success("Item created successfully");
+      queryClient.invalidateQueries({ queryKey: ["marketplace"] });
     },
   });
 

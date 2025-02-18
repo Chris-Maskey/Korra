@@ -1,8 +1,8 @@
-type AdoptionLayoutProps = {
+type MarketplaceLayoutProps = {
   children: React.ReactNode;
 };
 
-const AdoptionLayout = ({ children }: AdoptionLayoutProps) => {
+const AdoptionLayout = ({ children }: MarketplaceLayoutProps) => {
   return <main className="max-w-screen-xl mx-auto">{children}</main>;
 };
 

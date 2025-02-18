@@ -3,7 +3,7 @@ import { CreatePost } from "@/features/space/components/feed/create-post";
 import { FeedPage } from "@/features/space/components/feed/feed-page";
 import { Tabs } from "@radix-ui/react-tabs";
 
-const MySpacePage = () => {
+const MySpacePage = async () => {
   return (
     <section className="space-y-6">
       <CreatePost />

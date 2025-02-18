@@ -23,7 +23,7 @@ export function RecommendationCarousel() {
         }),
       ]}
       orientation="vertical"
-      className="w-full max-w-xs"
+      className="hidden md:block w-full max-w-xs"
     >
       <CarouselContent className="-mt-1 h-[400px]">
         {Array.from({ length: 3 }).map((_, index) => (

@@ -6,7 +6,7 @@ type SpaceLayoutProps = {
 
 const SpaceLayout = async ({ children }: SpaceLayoutProps) => {
   return (
-    <main className="max-w-screen-xl mx-auto ">
+    <main className="max-w-screen-xl mx-auto px-4 xl:px-0">
       <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <Navbar />
       </div>

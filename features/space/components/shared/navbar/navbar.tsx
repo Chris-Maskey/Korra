@@ -6,10 +6,10 @@ import { Input } from "@/components/ui/input";
 import {
   Bell,
   Home,
-  MessageCircle,
   Search,
   Origami,
   PawPrint,
+  ShoppingBag,
 } from "lucide-react";
 import { UserMenu } from "../user-menu";
 import NavbarButton from "./navbar-butons";
@@ -45,9 +45,9 @@ export function Navbar() {
             redirectionUrl="/space/adoption"
           />
           <NavbarButton
-            title="Messages"
-            Icon={MessageCircle}
-            redirectionUrl="/space/messages"
+            title="Marketplace"
+            Icon={ShoppingBag}
+            redirectionUrl="/space/marketplace"
           />
           <NavbarButton
             title="Notifications"

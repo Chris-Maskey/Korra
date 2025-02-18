@@ -10,36 +10,57 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
-import { EllipsisIcon, MessageCircle, Share, Trash2 } from "lucide-react";
-import { AdoptionPost } from "../../types";
+import { EllipsisIcon, Share, ShoppingBag, Trash2 } from "lucide-react";
+import { MarketplaceItem } from "../../types";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useDeleteAdoptionPost } from "../../hooks/adoption/use-delete-adoption-post";
 import { cn } from "@/lib/utils";
+import { useDeleteMarketplaceItem } from "../../hooks/marketplace/use-delete-marketplace-item";
+import Link from "next/link";
 
-type AdoptionCardProps = {
-  adoption: AdoptionPost;
+type MarketplaceItemCardProps = {
+  marketplaceItem: MarketplaceItem;
   userId: string | undefined;
 };
 
-const AdoptionCard = ({ adoption, userId }: AdoptionCardProps) => {
-  const { mutateAsync: deleteAdoptionPost, isPending: deletePending } =
-    useDeleteAdoptionPost();
+const getCurrencySymbol = (currency: string) => {
+  switch (currency) {
+    case "USD":
+      return "$";
+    case "EUR":
+      return "€";
+    case "GBP":
+      return "£";
+    case "JPY":
+      return "¥";
+    case "NPR":
+      return "रू";
+    default:
+      return "$";
+  }
+};
+
+const AdoptionCard = ({
+  marketplaceItem,
+  userId,
+}: MarketplaceItemCardProps) => {
+  const { mutateAsync: deleteMarketplaceItem, isPending: deletePending } =
+    useDeleteMarketplaceItem();
 
   const handleDelete = async () => {
-    await deleteAdoptionPost(adoption.id);
+    await deleteMarketplaceItem(marketplaceItem.id);
   };
 
   return (
     <Card className={cn(deletePending && "opacity-50")}>
       <CardHeader className="p-0">
         <Image
-          src={adoption.image_url}
-          alt={adoption.pet_name}
+          src={marketplaceItem.image_url}
+          alt={marketplaceItem.item_name}
           width={400}
           height={300}
           className="object-cover h-48 w-full rounded-t-lg"
@@ -48,13 +69,19 @@ const AdoptionCard = ({ adoption, userId }: AdoptionCardProps) => {
       <CardContent className="p-4">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-lg">{adoption.pet_name}</h3>
+            <Link href={`/marketplace/${marketplaceItem.id}`}>
+              <h3 className="font-semibold text-lg">
+                {marketplaceItem.item_name}
+              </h3>
+            </Link>
             <p className="text-sm text-muted-foreground">
-              {adoption.pet_type} • {adoption.pet_age} {adoption.pet_age_unit}
+              {marketplaceItem.item_type} •{" "}
+              {getCurrencySymbol(marketplaceItem.currency!)}
+              {marketplaceItem.item_price}
             </p>
           </div>
           <DropdownMenu>
-            {adoption?.user_id === userId && (
+            {marketplaceItem?.user_id === userId && (
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon">
                   <EllipsisIcon />
@@ -74,14 +101,14 @@ const AdoptionCard = ({ adoption, userId }: AdoptionCardProps) => {
           </DropdownMenu>
         </div>
         <p className="mt-2 text-sm line-clamp-2 h-10">
-          {adoption.pet_description}
+          {marketplaceItem.item_description}
         </p>
       </CardContent>
-      {adoption?.user_id !== userId && (
+      {marketplaceItem?.user_id !== userId && (
         <CardFooter className="p-4 pt-0 flex gap-2">
           <Button className="flex-1" disabled={deletePending}>
-            <MessageCircle className="w-4 h-4 mr-2" />
-            Connect
+            <ShoppingBag className="w-4 h-4 mr-2" />
+            Buy Now
           </Button>
           <Button variant="outline" size="icon" disabled={deletePending}>
             <Share className="w-4 h-4" />

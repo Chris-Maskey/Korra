@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createAdoption } from "../../actions/adoption/create-adoption";
+import { deleteAdoptionPost } from "../../actions/adoption/delete-adoption";
 import { toast } from "sonner";
 
-export const useCreateAdoption = () => {
+export const useDeleteAdoptionPost = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: createAdoption,
+    mutationFn: deleteAdoptionPost,
     onMutate: () => {
-      toast.loading("Creating adoption...");
+      toast.loading("Deleting adoption...");
     },
     onError: (error) => {
       toast.dismiss();
@@ -15,7 +15,7 @@ export const useCreateAdoption = () => {
     },
     onSuccess: () => {
       toast.dismiss();
-      toast.success("Adoption created successfully");
+      toast.success("Adoption deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["adoptions"] });
     },
   });

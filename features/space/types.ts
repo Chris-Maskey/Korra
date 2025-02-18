@@ -42,3 +42,15 @@ export type AdoptionPost = {
   pet_type: string;
   user_id: string;
 };
+
+export type MarketplaceItem = {
+  created_at: string | null;
+  id: string;
+  image_url: string;
+  item_description: string;
+  currency: Database["public"]["Enums"]["currency"] | null;
+  item_name: string;
+  item_price: number;
+  item_type: string;
+  user_id: string;
+};

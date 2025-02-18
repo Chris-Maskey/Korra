@@ -128,6 +128,50 @@ export type Database = {
           },
         ]
       }
+      marketplace: {
+        Row: {
+          created_at: string | null
+          currency: Database["public"]["Enums"]["currency"]
+          id: string
+          image_url: string
+          item_description: string
+          item_name: string
+          item_price: number
+          item_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          currency?: Database["public"]["Enums"]["currency"]
+          id?: string
+          image_url: string
+          item_description: string
+          item_name: string
+          item_price: number
+          item_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          currency?: Database["public"]["Enums"]["currency"]
+          id?: string
+          image_url?: string
+          item_description?: string
+          item_name?: string
+          item_price?: number
+          item_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "marketplace_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       posts: {
         Row: {
           content: string
@@ -198,7 +242,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      "pet_age-Unit": "months" | "years"
+      currency: "USD" | "NPR" | "EUR" | "JPY" | "GBP"
+      "pet_age-Unit": "months" | "years" | "month" | "year"
       post_type: "NORMAL" | "HELP" | "ADOPTION"
       user_role: "BASIC" | "PREMIUM" | "ORGANIZATION"
     }

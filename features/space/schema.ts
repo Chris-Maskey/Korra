@@ -25,3 +25,19 @@ export const adoptionSchema = z.object({
     .instanceof(File)
     .refine((file) => file.size > 0, "Image is required"),
 });
+
+export const marketplaceItemSchema = z.object({
+  itemName: z.string().min(1, "Item name is required"),
+  itemType: z.string().min(1, "Item type is required"),
+  currency: z.enum(["USD", "EUR", "GBP", "JPY", "NPR"]).default("USD"),
+  itemPrice: z
+    .number()
+    .positive("Item price is required")
+    .min(1, "Item price is required"),
+  itemDescription: z
+    .string()
+    .min(10, "Description must be at least 10 characters"),
+  itemImage: z
+    .instanceof(File)
+    .refine((file) => file.size > 0, "Image is required"),
+});

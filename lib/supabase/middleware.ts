@@ -47,7 +47,7 @@ export async function updateSession(request: NextRequest) {
   } else if (request.nextUrl.pathname.startsWith("/auth") && user) {
     // User is logged in, prevent them from accessing the auth page
     const url = request.nextUrl.clone();
-    url.pathname = "/space";
+    url.pathname = "/space/feed";
     return NextResponse.redirect(url); // Redirect logged-in users to the home page
   }
 
