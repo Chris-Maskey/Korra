@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { UserMenu } from "../user-menu";
 import NavbarButton from "./navbar-butons";
+import NotificationTab from "./notification-tab";
 
 export function Navbar() {
   return (
@@ -49,11 +50,7 @@ export function Navbar() {
             Icon={ShoppingBag}
             redirectionUrl="/space/marketplace"
           />
-          <NavbarButton
-            title="Notifications"
-            Icon={Bell}
-            redirectionUrl="/space/notifications"
-          />
+          <NotificationTab />
           <UserMenu />
         </div>
       </div>

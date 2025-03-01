@@ -54,3 +54,14 @@ export type MarketplaceItem = {
   item_type: string;
   user_id: string;
 };
+
+export type Notification = {
+  id: string;
+  recipient_id: string;
+  sender_id: string;
+  sender_name: string;
+  type: "like" | "comment";
+  post_id?: string;
+  read: boolean;
+  created_at: string;
+};

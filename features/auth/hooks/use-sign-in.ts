@@ -9,6 +9,7 @@ export const useSignIn = () => {
       toast.loading("Signing In...");
     },
     onError: (error) => {
+      toast.dismiss();
       toast.error(error.message || "An unexpected error occurred");
     },
     onSuccess: () => {

@@ -42,7 +42,7 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
         >
           {user?.avatar_url ? (
             <Image
-              src={user.avatar_url || "/placeholder.svg"}
+              src={user.avatar_url || ""}
               alt={`${user.full_name}'s avatar`}
               width={120}
               height={120}
