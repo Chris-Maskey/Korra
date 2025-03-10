@@ -1,8 +1,10 @@
 import { useMutation } from "@tanstack/react-query";
 import { signIn } from "../actions/sign-in";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export const useSignIn = () => {
+  const router = useRouter();
   const mutate = useMutation({
     mutationFn: signIn,
     onMutate: () => {
@@ -15,6 +17,7 @@ export const useSignIn = () => {
     onSuccess: () => {
       toast.dismiss();
       toast.success("Signed In");
+      router.push("/space/feed");
     },
   });
 

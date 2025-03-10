@@ -6,6 +6,15 @@ export type Profile = {
   avatar_url: string | null;
 };
 
+export type User = {
+  avatar_url: string | null;
+  created_at: string | null;
+  full_name: string | null;
+  id: string;
+  role: Database["public"]["Enums"]["user_role"];
+  user_name: string | null;
+};
+
 export type Like = {
   id: string;
   user_id: string;

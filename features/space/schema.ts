@@ -1,11 +1,18 @@
 import * as z from "zod";
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; //5MB
 export const postSchema = z.object({
   content: z
     .string()
     .min(1, "Content is required")
     .max(2000, "Content must be less than 2000 characters"),
-  image: z.instanceof(File).optional(),
+  image: z
+    .instanceof(File)
+    .optional()
+    .refine(
+      (file) => !file || file.size <= MAX_FILE_SIZE,
+      "File must be less than 5MB",
+    ),
   type: z.enum(["NORMAL", "HELP"]).default("NORMAL"),
 });
 
@@ -23,7 +30,11 @@ export const adoptionSchema = z.object({
     .min(10, "Description must be at least 10 characters"),
   petImage: z
     .instanceof(File)
-    .refine((file) => file.size > 0, "Image is required"),
+    .refine((file) => file.size < 0, "Image is required")
+    .refine(
+      (file) => file.size <= MAX_FILE_SIZE,
+      "Image size must be less than 5MB",
+    ),
 });
 
 export const marketplaceItemSchema = z.object({
@@ -39,5 +50,22 @@ export const marketplaceItemSchema = z.object({
     .min(10, "Description must be at least 10 characters"),
   itemImage: z
     .instanceof(File)
-    .refine((file) => file.size > 0, "Image is required"),
+    .refine((file) => file.size < 0, "Image is required")
+    .refine(
+      (file) => file.size > 5 * 1024 * 1024,
+      "Image size must be less than 5MB",
+    ),
+});
+
+export const messageSchema = z.object({
+  content: z
+    .string()
+    .min(1, "Message cannot be empty")
+    .max(2000, "Message is too long"),
+  attachment: z
+    .instanceof(File)
+    .refine((file) => !file || file.size <= MAX_FILE_SIZE, {
+      message: "File size must be less than 5MB",
+    })
+    .optional(),
 });

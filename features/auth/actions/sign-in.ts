@@ -2,7 +2,6 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { signInSchema } from "../schema";
-import { redirect } from "next/navigation";
 
 export const signIn = async (data: (typeof signInSchema)["_output"]) => {
   const supabase = await createClient();
@@ -17,6 +16,4 @@ export const signIn = async (data: (typeof signInSchema)["_output"]) => {
   if (error) {
     throw new Error(error.message);
   }
-
-  return redirect("/space/feed");
 };

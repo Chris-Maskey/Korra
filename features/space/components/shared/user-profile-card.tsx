@@ -40,9 +40,9 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
             state === "expanded" ? "size-32" : "size-10",
           )}
         >
-          {user?.avatar_url ? (
+          {user && user.avatar_url ? (
             <Image
-              src={user.avatar_url || ""}
+              src={user.avatar_url}
               alt={`${user.full_name}'s avatar`}
               width={120}
               height={120}

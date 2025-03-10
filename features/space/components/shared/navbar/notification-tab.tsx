@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Bell } from "lucide-react";
+import { Bell, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -171,7 +171,7 @@ export default function NotificationTab() {
           <div className="max-h-80 overflow-y-auto">
             {loading ? (
               <div className="p-6 text-center text-muted-foreground">
-                Loading...
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               </div>
             ) : notifications.length > 0 ? (
               <div>
@@ -182,14 +182,13 @@ export default function NotificationTab() {
                       "flex cursor-pointer flex-col gap-1 border-b p-3 transition-colors hover:bg-muted",
                       !notification.read && "bg-muted/50",
                     )}
-                    onClick={() => markAsRead(notification.id)}
+                    onClick={() => {
+                      if (!notification.read) markAsRead(notification.id);
+                    }}
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2">
                         <div className="flex-1">
-                          {/* <p className="text-sm font-medium"> */}
-                          {/*   New {notification.type} */}
-                          {/* </p> */}
                           <p className="text-xs text-muted-foreground">
                             {notification.sender_name}{" "}
                             {getNotificationMessage(notification.type)}

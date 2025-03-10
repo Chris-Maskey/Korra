@@ -4,12 +4,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
-  Bell,
   Home,
   Search,
   Origami,
   PawPrint,
   ShoppingBag,
+  MessageCircle,
 } from "lucide-react";
 import { UserMenu } from "../user-menu";
 import NavbarButton from "./navbar-butons";
@@ -49,6 +49,11 @@ export function Navbar() {
             title="Marketplace"
             Icon={ShoppingBag}
             redirectionUrl="/space/marketplace"
+          />
+          <NavbarButton
+            title="Chat"
+            Icon={MessageCircle}
+            redirectionUrl="/space/chat"
           />
           <NotificationTab />
           <UserMenu />
