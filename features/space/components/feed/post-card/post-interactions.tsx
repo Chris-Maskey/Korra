@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { HandCoins, Heart, MessageCircle } from "lucide-react";
+import { HandCoins, Heart, MessageCircle, PawPrint } from "lucide-react";
 import { startTransition, useOptimistic, useState } from "react";
 import { useLikePost } from "../../../hooks/feed/use-like-post";
 import { Tables } from "@/database.types";
@@ -72,7 +72,7 @@ const PostActions = ({
         className={optimisticLike.isLiked ? "text-primary" : ""}
         disabled={deletePending}
       >
-        <Heart className="w-5 h-5 mr-1" />
+        <PawPrint className="w-5 h-5 mr-1" />
         {optimisticLike.likes} Like
       </Button>
       <Button disabled={deletePending} variant="ghost" size="sm">

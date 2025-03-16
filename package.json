@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "stripe": "stripe listen --forward-to localhost:3000/api/stripe",
+    "generate:schema": "bunx supabase gen types typescript --project-id zlyojeokhimhdszdmott --schema public > database.types.ts"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.2",
@@ -44,6 +46,7 @@
     "react-icons": "^5.4.0",
     "react-intersection-observer": "^9.15.1",
     "sonner": "^1.7.1",
+    "stripe": "^17.7.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "use-debounce": "^10.0.4",

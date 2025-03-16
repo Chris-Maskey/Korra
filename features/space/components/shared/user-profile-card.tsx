@@ -2,7 +2,14 @@
 
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { cn } from "@/lib/utils";
-import { BadgeCheck, Bot, Calendar, LinkIcon, MapPin } from "lucide-react";
+import {
+  BadgeCheck,
+  Bot,
+  Calendar,
+  Crown,
+  LinkIcon,
+  MapPin,
+} from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -59,10 +66,10 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
         </div>
         {state === "expanded" && !isLoading && (
           <div className="flex flex-col items-center justify-center text-center">
-            <h3 className="text-lg flex items-center gap-1.5 font-semibold">
+            <h3 className="text-lg flex items-center gap-2 font-semibold">
               {user?.full_name}
               {user?.role !== "BASIC" && (
-                <BadgeCheck className="size-5 text-yellow-500" />
+                <Crown className="size-4 text-yellow-500" />
               )}
             </h3>
             <span className="text-sm text-muted-foreground font-medium">
