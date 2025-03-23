@@ -92,6 +92,42 @@ export type Database = {
           },
         ]
       }
+      follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "follows_follower_id_fkey"
+            columns: ["follower_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "follows_following_id_fkey"
+            columns: ["following_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       likes: {
         Row: {
           created_at: string | null
@@ -310,27 +346,45 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
-          created_at: string | null
-          full_name: string | null
+          banner_url: string | null
+          bio: string | null
+          created_at: string
+          email: string | null
+          full_name: string
           id: string
+          instagram: string | null
           role: Database["public"]["Enums"]["user_role"]
+          twitter: string | null
           user_name: string | null
+          website: string | null
         }
         Insert: {
           avatar_url?: string | null
-          created_at?: string | null
-          full_name?: string | null
+          banner_url?: string | null
+          bio?: string | null
+          created_at?: string
+          email?: string | null
+          full_name: string
           id: string
+          instagram?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          twitter?: string | null
           user_name?: string | null
+          website?: string | null
         }
         Update: {
           avatar_url?: string | null
-          created_at?: string | null
-          full_name?: string | null
+          banner_url?: string | null
+          bio?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string
           id?: string
+          instagram?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          twitter?: string | null
           user_name?: string | null
+          website?: string | null
         }
         Relationships: []
       }

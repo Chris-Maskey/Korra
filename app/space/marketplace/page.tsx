@@ -75,7 +75,9 @@ const MarketplacePage = () => {
             <div className="flex items-center gap-2">
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-4xl font-bold">Marketplace</h1>
+                  <h1 className="text-4xl font-bold tracking-tight">
+                    Marketplace
+                  </h1>
                   <Luggage className="w-8 h-8 animate-bounce text-primary" />
                 </div>
                 <p className="text-muted-foreground mt-1">

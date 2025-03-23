@@ -10,12 +10,16 @@ import {
   PawPrint,
   ShoppingBag,
   MessageCircle,
+  BookUser,
 } from "lucide-react";
 import { UserMenu } from "../user-menu";
 import NavbarButton from "./navbar-butons";
 import NotificationTab from "./notification-tab";
+import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 
 export function Navbar() {
+  const { data: user } = useCurrentUser();
+
   return (
     <nav className="border-b">
       <div className="flex h-16 items-center px-4 container mx-auto">
@@ -41,15 +45,22 @@ export function Navbar() {
           </Button>
           <NavbarButton title="Home" Icon={Home} redirectionUrl="/space/feed" />
           <NavbarButton
+            title="Profiles"
+            Icon={BookUser}
+            redirectionUrl="/space/profile"
+          />
+          <NavbarButton
             title="Adopt"
             Icon={PawPrint}
             redirectionUrl="/space/adoption"
           />
-          <NavbarButton
-            title="Marketplace"
-            Icon={ShoppingBag}
-            redirectionUrl="/space/marketplace"
-          />
+          {user?.role === "PREMIUM" && (
+            <NavbarButton
+              title="Marketplace"
+              Icon={ShoppingBag}
+              redirectionUrl="/space/marketplace"
+            />
+          )}
           <NavbarButton
             title="Chat"
             Icon={MessageCircle}

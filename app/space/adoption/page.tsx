@@ -65,7 +65,9 @@ export default function AdoptionPage() {
             <div className="flex items-center gap-2">
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-4xl font-bold">Pet Adoption</h1>
+                  <h1 className="text-4xl font-bold tracking-tight">
+                    Pet Adoption
+                  </h1>
                   <Rabbit className="w-8 h-8 animate-bounce text-primary" />
                 </div>
                 <p className="text-muted-foreground mt-1">
