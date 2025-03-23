@@ -135,6 +135,8 @@ export default function NotificationTab() {
         return "liked your post";
       case "comment":
         return "commented on your post";
+      case "follow":
+        return "started following you";
       default:
         return "interacted with your post";
     }

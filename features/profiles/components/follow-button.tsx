@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { UserPlus, UserMinus, Loader2 } from "lucide-react";
 import { followUser, unfollowUser } from "../actions/follow";
+import { toast } from "sonner";
 
 interface FollowButtonProps {
   userId: string;
@@ -18,7 +19,6 @@ export function FollowButton({
 }: FollowButtonProps) {
   const [following, setFollowing] = useState(isFollowing);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   if (isCurrentUser) {
     return null;
@@ -26,26 +26,25 @@ export function FollowButton({
 
   const handleFollow = async () => {
     setLoading(true);
-    setError(null);
 
     try {
       if (following) {
         const result = await unfollowUser(userId);
         if (result.error) {
-          setError(result.error);
+          toast.error(result.error);
           return;
         }
         setFollowing(false);
       } else {
         const result = await followUser(userId);
         if (result.error) {
-          setError(result.error);
+          toast.error(result.error);
           return;
         }
         setFollowing(true);
       }
     } catch (err) {
-      setError(`Something went wrong: ${err}`);
+      toast.error(err as string);
     } finally {
       setLoading(false);
     }
@@ -68,7 +67,6 @@ export function FollowButton({
         )}
         {following ? "Unfollow" : "Follow"}
       </Button>
-      {error && <p className="text-sm text-destructive mt-1">{error}</p>}
     </div>
   );
 }
