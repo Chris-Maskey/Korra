@@ -2,14 +2,7 @@
 
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { cn } from "@/lib/utils";
-import {
-  BadgeCheck,
-  Bot,
-  Calendar,
-  Crown,
-  LinkIcon,
-  MapPin,
-} from "lucide-react";
+import { Bot, Calendar, Crown, LinkIcon, MapPin } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { toast } from "sonner";
@@ -21,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 
 type UserProfileCardProps = {
   state: "expanded" | "collapsed";
@@ -41,29 +35,31 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
   return (
     <Card className="w-full max-w-xs">
       <CardHeader className="flex flex-col items-center space-y-4">
-        <div
-          className={cn(
-            "flex items-center justify-center rounded-full group bg-muted cursor-pointer border hover:border-primary duration-500",
-            state === "expanded" ? "size-32" : "size-10",
-          )}
-        >
-          {user && user.avatar_url ? (
-            <Image
-              src={user.avatar_url}
-              alt={`${user.full_name}'s avatar`}
-              width={120}
-              height={120}
-              className="rounded-full"
-            />
-          ) : (
-            <Bot
-              className={cn(
-                "text-primary/70 group-hover:text-primary/80 duration-500",
-                state === "expanded" ? "size-16" : "size-6",
-              )}
-            />
-          )}
-        </div>
+        <Link href={`/space/profile/${profileId}`}>
+          <div
+            className={cn(
+              "flex items-center justify-center rounded-full group bg-muted cursor-pointer border hover:border-primary duration-500",
+              state === "expanded" ? "size-32" : "size-10",
+            )}
+          >
+            {user && user.avatar_url ? (
+              <Image
+                src={user.avatar_url}
+                alt={`${user.full_name}'s avatar`}
+                width={120}
+                height={120}
+                className="rounded-full"
+              />
+            ) : (
+              <Bot
+                className={cn(
+                  "text-primary/70 group-hover:text-primary/80 duration-500",
+                  state === "expanded" ? "size-16" : "size-6",
+                )}
+              />
+            )}
+          </div>
+        </Link>
         {state === "expanded" && !isLoading && (
           <div className="flex flex-col items-center justify-center text-center">
             <h3 className="text-lg flex items-center gap-2 font-semibold">

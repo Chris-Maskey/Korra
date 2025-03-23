@@ -17,6 +17,7 @@ export const useSignIn = () => {
     onSuccess: () => {
       toast.dismiss();
       toast.success("Signed In");
+      router.refresh();
       router.push("/space/feed");
     },
   });

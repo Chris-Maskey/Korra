@@ -12,12 +12,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { useSignOut } from "@/features/auth/hooks/use-sign-out";
-import { Moon, Sun, User, CreditCard, LogOut } from "lucide-react";
+import { Moon, Sun, User, CreditCard, LogOut, Crown } from "lucide-react";
 import { useTheme } from "next-themes";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export function UserMenu() {
   const { setTheme, theme } = useTheme();
   const { data: user } = useCurrentUser();
+  const router = useRouter();
 
   const { mutate: signOut } = useSignOut();
 
@@ -37,20 +40,29 @@ export function UserMenu() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
+        <DropdownMenuLabel
+          onClick={() => router.push(`/space/profile/${user?.id}`)}
+          className="font-normal cursor-pointer"
+        >
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
+            <p className="flex items-center gap-2 text-sm font-medium leading-none">
               {user?.full_name}
+              {user?.role === "PREMIUM" && (
+                <Crown className="h-3 w-3 text-yellow-500" />
+              )}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user?.user_name}
+              @{user?.user_name}
             </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuItem
+          onClick={() => router.push("/space/profile/settings")}
+          className="cursor-pointer"
+        >
           <User className="mr-2 h-4 w-4" />
-          <span>Account</span>
+          <span>Manage Account</span>
         </DropdownMenuItem>
         <DropdownMenuItem className="cursor-pointer">
           <CreditCard className="mr-2 h-4 w-4" />

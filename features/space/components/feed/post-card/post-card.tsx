@@ -34,9 +34,7 @@ export function PostCard({
   const [numberofComments, setNumberofComments] = useState(comments.length);
 
   return (
-    <Card
-      className={cn("w-full max-w-2xl mx-auto ", deletePending && "opacity-50")}
-    >
+    <Card className={cn("w-full  mx-auto ", deletePending && "opacity-50")}>
       <CardHeader className="flex flex-row items-center justify-between">
         <PostHeader
           postId={id}
