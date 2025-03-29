@@ -40,6 +40,7 @@ export const adoptionSchema = z.object({
 export const marketplaceItemSchema = z.object({
   itemName: z.string().min(1, "Item name is required"),
   itemType: z.string().min(1, "Item type is required"),
+  itemQuantity: z.number().positive("Item quantity is required"),
   currency: z.enum(["USD", "EUR", "GBP", "JPY", "NPR"]).default("USD"),
   itemPrice: z
     .number()
@@ -50,9 +51,9 @@ export const marketplaceItemSchema = z.object({
     .min(10, "Description must be at least 10 characters"),
   itemImage: z
     .instanceof(File)
-    .refine((file) => file.size < 0, "Image is required")
+    .refine((file) => file.size > 0, "Image is required")
     .refine(
-      (file) => file.size > 5 * 1024 * 1024,
+      (file) => file.size <= 5 * 1024 * 1024,
       "Image size must be less than 5MB",
     ),
 });

@@ -87,6 +87,7 @@ export default function ProfilesPage() {
                   key={profile.id}
                   profile={profile}
                   postCount={profile.post_count[0]?.count || 0}
+                  postCountLoading={isLoading}
                 />
               ))}
             </div>

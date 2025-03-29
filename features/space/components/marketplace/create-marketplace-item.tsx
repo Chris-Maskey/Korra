@@ -63,6 +63,7 @@ const CreateMarketplaceItem = () => {
     defaultValues: {
       itemName: "",
       itemType: "",
+      itemQuantity: undefined,
       currency: "USD",
       itemPrice: undefined,
       itemDescription: "",
@@ -184,6 +185,29 @@ const CreateMarketplaceItem = () => {
                       />
                     </FormControl>
                   </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="itemQuantity"
+              disabled={isPending}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Enter quantity"
+                      min={1}
+                      step="1"
+                      {...field}
+                      value={field.value ?? ""}
+                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

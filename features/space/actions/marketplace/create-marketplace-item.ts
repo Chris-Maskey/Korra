@@ -46,6 +46,7 @@ export const createMarketplaceItem = async (
       user_id: user.user.id,
       item_name: data.itemName,
       item_type: data.itemType,
+      item_quantity: data.itemQuantity,
       currency: data.currency,
       item_price: data.itemPrice,
       item_description: data.itemDescription,

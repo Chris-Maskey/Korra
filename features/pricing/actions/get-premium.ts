@@ -37,7 +37,7 @@ export const getPremium = async () => {
   if (user.id) {
     const userId = user.id;
     try {
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("profiles")
         .update({ role: "PREMIUM" })
         .eq("id", userId);
@@ -45,7 +45,6 @@ export const getPremium = async () => {
       if (error) {
         console.error("Database update error:", error);
       }
-      console.log("Database updated:", data);
     } catch (error) {
       console.error("Unexpected error during database update:", error);
     }

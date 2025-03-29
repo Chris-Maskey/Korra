@@ -14,7 +14,6 @@ import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { useSignOut } from "@/features/auth/hooks/use-sign-out";
 import { Moon, Sun, User, CreditCard, LogOut, Crown } from "lucide-react";
 import { useTheme } from "next-themes";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export function UserMenu() {

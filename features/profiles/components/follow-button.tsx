@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { UserPlus, UserMinus, Loader2 } from "lucide-react";
 import { followUser, unfollowUser } from "../actions/follow";
@@ -10,15 +10,23 @@ interface FollowButtonProps {
   userId: string;
   isFollowing: boolean | undefined;
   isCurrentUser: boolean | undefined;
+  isFollowStatusLoading?: boolean;
+  className?: string;
 }
 
 export function FollowButton({
   userId,
   isFollowing,
   isCurrentUser,
+  isFollowStatusLoading,
+  className,
 }: FollowButtonProps) {
   const [following, setFollowing] = useState(isFollowing);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setFollowing(isFollowing);
+  }, [isFollowing]);
 
   if (isCurrentUser) {
     return null;
@@ -51,22 +59,29 @@ export function FollowButton({
   };
 
   return (
-    <div>
-      <Button
-        onClick={handleFollow}
-        variant={following ? "outline" : "default"}
-        size="sm"
-        disabled={loading}
-      >
-        {loading ? (
-          <Loader2 className="h-4 w-4 animate-spin mr-2" />
-        ) : following ? (
-          <UserMinus className="h-4 w-4 mr-2" />
-        ) : (
-          <UserPlus className="h-4 w-4 mr-2" />
-        )}
-        {following ? "Unfollow" : "Follow"}
-      </Button>
+    <div className={className}>
+      {isFollowStatusLoading ? (
+        <div className="flex items-center justify-center">
+          <Loader2 className="h-4 w-4 animate-spin" />
+        </div>
+      ) : (
+        <Button
+          onClick={handleFollow}
+          variant={following ? "outline" : "default"}
+          size="sm"
+          disabled={loading || isFollowStatusLoading}
+          className="w-full"
+        >
+          {loading ? (
+            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+          ) : following ? (
+            <UserMinus className="h-4 w-4 mr-2" />
+          ) : (
+            <UserPlus className="h-4 w-4 mr-2" />
+          )}
+          {following ? "Unfollow" : "Follow"}
+        </Button>
+      )}
     </div>
   );
 }

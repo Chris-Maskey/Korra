@@ -1,35 +1,34 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tables } from "@/database.types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Crown } from "lucide-react";
+import { FollowButton } from "./follow-button";
+import { useGetFollowStatus } from "../hooks/use-get-follow-status";
+import { useGetFollowCounts } from "../hooks/use-get-follow-counts";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface UserCardProps {
   profile: Tables<"profiles">;
   postCount: number;
+  postCountLoading: boolean;
 }
 
-export function UserCard({ profile, postCount }: UserCardProps) {
+export function UserCard({
+  profile,
+  postCount,
+  postCountLoading,
+}: UserCardProps) {
   const router = useRouter();
-  const [isFollowing, setIsFollowing] = useState(false);
-  // const [followersCount, setFollowersCount] = useState(
-  //   profile.followers_count || 0,
-  // );
 
-  // const handleFollow = () => {
-  //   setIsFollowing(!isFollowing);
-  //   setFollowersCount(isFollowing ? followersCount - 1 : followersCount + 1);
-  //   // In a real app, you would call an API to follow/unfollow the user
-  // };
-
-  // If pets aren't provided, use placeholder data
-  // const posts = profile.pets || [];
+  const { data: followStatus, isLoading: followStatusLoading } =
+    useGetFollowStatus(profile.id);
+  const { data: followCount, isLoading: followCountLoading } =
+    useGetFollowCounts(profile.id);
 
   const navigateToUserProfile = (userId: string) => {
     router.push(`/space/profile/${userId}`);
@@ -85,28 +84,46 @@ export function UserCard({ profile, postCount }: UserCardProps) {
 
           <div className="flex gap-3">
             <div className="flex flex-col items-center">
-              <span className="font-semibold">100</span>
+              <span className="font-semibold">
+                {followCountLoading ? (
+                  <Skeleton className="h-6 w-6" />
+                ) : (
+                  followCount?.followers
+                )}
+              </span>
               <span className="text-xs text-muted-foreground">Followers</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="font-semibold">100</span>
+              <span className="font-semibold">
+                {followCountLoading ? (
+                  <Skeleton className="h-6 w-6" />
+                ) : (
+                  followCount?.following
+                )}
+              </span>
               <span className="text-xs text-muted-foreground">Following</span>
             </div>
             <div className="flex flex-col items-center">
-              <span className="font-semibold">{postCount}</span>
+              <span className="font-semibold">
+                {postCountLoading ? (
+                  <Skeleton className="h-6 w-6" />
+                ) : (
+                  postCount
+                )}
+              </span>
               <span className="text-xs text-muted-foreground">Posts</span>
             </div>
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between p-5 pt-0">
-        <Button
-          variant={isFollowing ? "outline" : "default"}
-          size="sm"
+      <CardFooter className="flex justify-between p-5 pt-0 w-full">
+        <FollowButton
+          userId={profile.id}
+          isFollowing={followStatus?.isFollowing}
+          isFollowStatusLoading={followStatusLoading}
+          isCurrentUser={followStatus?.isCurrentUser}
           className="w-full"
-        >
-          {isFollowing ? "Following" : "Follow"}
-        </Button>
+        />
       </CardFooter>
     </Card>
   );

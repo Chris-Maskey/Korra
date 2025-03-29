@@ -26,27 +26,21 @@ export async function POST(request: NextRequest) {
     return new NextResponse("Webhook error", { status: 400 });
   }
 
-  if (
-    event.type === "checkout.session.completed" &&
-    event.data.object.payment_status === "paid"
-  ) {
-    const metadata = event.data.object.metadata;
-    if (metadata) {
-      const userId = metadata.userId;
-      try {
-        const { data, error } = await supabase
-          .from("profiles")
-          .update({ role: "PREMIUM" })
-          .eq("id", userId);
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object;
+    const productId = session.metadata?.productId;
+    const quantity = parseInt(session.metadata?.quantity || "0", 10);
 
-        if (error) {
-          console.error("Database update error:", error);
-          return new NextResponse("Database error", { status: 500 });
-        }
-        console.log("Database updated:", data);
-      } catch (error) {
-        console.error("Unexpected error during database update:", error);
-        return new NextResponse("Unexpected server error", { status: 500 });
+    //TODO: Decrement the quantity of the product
+    if (productId && quantity > 0) {
+      const { error } = await supabase.rpc("decrement_quantity", {
+        product_id: productId,
+        decrement_value: quantity,
+      });
+
+      if (error) {
+        console.error("Failed to update marketplace quantity:", error.message);
+        return new NextResponse("Database update error", { status: 500 });
       }
     }
   }

@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useDeleteMarketplaceItem } from "../../hooks/marketplace/use-delete-marketplace-item";
 import Link from "next/link";
+import { toast } from "sonner";
 
 type MarketplaceItemCardProps = {
   marketplaceItem: MarketplaceItem;
@@ -44,7 +45,7 @@ const getCurrencySymbol = (currency: string) => {
   }
 };
 
-const AdoptionCard = ({
+const MarketplaceItemCard = ({
   marketplaceItem,
   userId,
 }: MarketplaceItemCardProps) => {
@@ -53,6 +54,13 @@ const AdoptionCard = ({
 
   const handleDelete = async () => {
     await deleteMarketplaceItem(marketplaceItem.id);
+  };
+
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(
+      `${process.env.NEXT_PUBLIC_APP_URL}/space/marketplace/${marketplaceItem.id}`,
+    );
+    toast.success("Link copied to clipboard");
   };
 
   return (
@@ -106,11 +114,21 @@ const AdoptionCard = ({
       </CardContent>
       {marketplaceItem?.user_id !== userId && (
         <CardFooter className="p-4 pt-0 flex gap-2">
-          <Button className="flex-1" disabled={deletePending}>
-            <ShoppingBag className="w-4 h-4 mr-2" />
-            Buy Now
-          </Button>
-          <Button variant="outline" size="icon" disabled={deletePending}>
+          <Link
+            href={`/space/marketplace/${marketplaceItem.id}`}
+            className="w-full"
+          >
+            <Button className="flex-1 w-full" disabled={deletePending}>
+              <ShoppingBag className="w-4 h-4" />
+              Buy Now
+            </Button>
+          </Link>
+          <Button
+            onClick={copyToClipboard}
+            variant="outline"
+            size="icon"
+            disabled={deletePending}
+          >
             <Share className="w-4 h-4" />
           </Button>
         </CardFooter>
@@ -119,4 +137,4 @@ const AdoptionCard = ({
   );
 };
 
-export default AdoptionCard;
+export default MarketplaceItemCard;
