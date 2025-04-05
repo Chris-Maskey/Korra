@@ -1,17 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import type {
-  CreateOrderInput,
-  Order,
-  OrderItem,
-  UpdateOrderInput,
-} from "@/features/space/types";
 import { createClient } from "@/lib/supabase/server";
+import { Order, UserOrder } from "../../types";
 
 // Create a new order
 export async function createOrder(
-  input: CreateOrderInput,
+  itemId: string,
+  quantity: number,
 ): Promise<{ success: boolean; data?: Order; error?: string }> {
   try {
     const supabase = await createClient();
@@ -25,21 +21,36 @@ export async function createOrder(
       return { success: false, error: "Unauthorized" };
     }
 
-    // Calculate total amount
-    const totalAmount = input.items.reduce(
-      (sum, item) => sum + item.price_per_unit * item.quantity,
-      0,
-    );
+    // Get the item details to calculate total price and check stock
+    const { data: item, error: itemError } = await supabase
+      .from("marketplace")
+      .select("id, item_price, item_quantity")
+      .eq("id", itemId)
+      .single();
 
-    // Start a transaction
+    if (itemError) {
+      throw new Error(itemError.message);
+    }
+
+    // Check if there's enough stock
+    if (item.item_quantity < quantity) {
+      return {
+        success: false,
+        error: `Not enough stock. Only ${item.item_quantity} items available.`,
+      };
+    }
+
+    // Calculate total price
+    const totalPrice = Number.parseFloat(item.item_price.toString()) * quantity;
+
+    // Create the order
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
         user_id: user.id,
-        status: "pending",
-        total_amount: totalAmount,
-        shipping_address: input.shipping_address,
-        payment_intent_id: input.payment_intent_id,
+        item_id: itemId,
+        quantity: quantity,
+        total_price: totalPrice,
       })
       .select()
       .single();
@@ -48,26 +59,11 @@ export async function createOrder(
       throw new Error(orderError.message);
     }
 
-    // Insert order items
-    const orderItems = input.items.map((item) => ({
-      order_id: order.id,
-      item_id: item.item_id,
-      quantity: item.quantity,
-      price_per_unit: item.price_per_unit,
-    }));
+    // The trigger will automatically reduce the item quantity
 
-    const { error: itemsError } = await supabase
-      .from("order_items")
-      .insert(orderItems);
+    revalidatePath(`/space/marketplace/${itemId}`);
 
-    if (itemsError) {
-      throw new Error(itemsError.message);
-    }
-
-    revalidatePath("/orders");
-    revalidatePath("/marketplace");
-
-    return { success: true, data: order as Order };
+    return { success: true, data: order };
   } catch (error) {
     console.error("Error creating order:", error);
     return {
@@ -77,10 +73,10 @@ export async function createOrder(
   }
 }
 
-// Get orders for the current user
+// Get user orders
 export async function getUserOrders(): Promise<{
   success: boolean;
-  data?: Order[];
+  data?: UserOrder[];
   error?: string;
 }> {
   try {
@@ -95,18 +91,28 @@ export async function getUserOrders(): Promise<{
       return { success: false, error: "Unauthorized" };
     }
 
-    // Get orders
+    // Get user orders with item details
     const { data: orders, error: ordersError } = await supabase
       .from("orders")
-      .select("*")
+      .select(
+        `
+        *,
+        item:marketplace(
+          id,
+          item_name,
+          item_price,
+          image_url
+        )
+      `,
+      )
       .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
+      .order("order_date", { ascending: false });
 
     if (ordersError) {
       throw new Error(ordersError.message);
     }
 
-    return { success: true, data: orders as Order[] };
+    return { success: true, data: orders };
   } catch (error) {
     console.error("Error fetching user orders:", error);
     return {

@@ -120,7 +120,7 @@ const MarketplaceItemCard = ({
           >
             <Button className="flex-1 w-full" disabled={deletePending}>
               <ShoppingBag className="w-4 h-4" />
-              Buy Now
+              View
             </Button>
           </Link>
           <Button

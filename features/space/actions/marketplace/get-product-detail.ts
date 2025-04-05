@@ -2,6 +2,19 @@
 
 import { createClient } from "@/lib/supabase/server";
 
+// Helper function to calculate rating distribution with proper TypeScript types
+type Review = {
+  rating: 1 | 2 | 3 | 4 | 5;
+  //eslint-disable-next-line
+  [key: string]: any;
+};
+
+type RatingDistribution = {
+  rating_value: 1 | 2 | 3 | 4 | 5;
+  count: number;
+  percentage: number;
+};
+
 export const getProductDetail = async (itemId: string) => {
   const supabase = await createClient();
 
@@ -10,6 +23,7 @@ export const getProductDetail = async (itemId: string) => {
       data: { user },
     } = await supabase.auth.getUser();
 
+    // Fetch the product details
     const { data: item, error: itemError } = await supabase
       .from("marketplace")
       .select(
@@ -28,16 +42,6 @@ export const getProductDetail = async (itemId: string) => {
 
     if (itemError) {
       throw new Error(itemError.message);
-    }
-
-    // Fetch rating statistics
-    const { data: ratingStats, error: ratingError } = await supabase.rpc(
-      "get_item_rating_distribution",
-      { item_id_param: itemId },
-    );
-
-    if (ratingError) {
-      console.error("Error fetching rating distribution:", ratingError);
     }
 
     // Fetch reviews
@@ -60,6 +64,9 @@ export const getProductDetail = async (itemId: string) => {
       console.error("Error fetching reviews:", reviewsError);
     }
 
+    // Calculate rating distribution manually since we might not have the RPC function
+    const ratingDistribution = calculateRatingDistribution(reviews || []);
+
     // If user is logged in, check if they've reviewed this item
     let userReview = null;
     let userHasPurchased = false;
@@ -78,34 +85,31 @@ export const getProductDetail = async (itemId: string) => {
       }
 
       // Check if user has purchased this item
-      const { data: hasPurchased, error: purchaseCheckError } =
-        await supabase.rpc("has_user_purchased_item", {
-          user_id_param: user.id,
-          item_id_param: itemId,
-        });
+      const { data: purchasedOrders, error: purchaseCheckError } =
+        await supabase
+          .from("orders")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("item_id", itemId);
 
-      if (!purchaseCheckError) {
-        userHasPurchased = hasPurchased;
+      if (
+        !purchaseCheckError &&
+        purchasedOrders &&
+        purchasedOrders.length > 0
+      ) {
+        userHasPurchased = true;
       }
     }
 
-    // Fetch seller statistics
-    const { data: sellerStats, error: sellerStatsError } = await supabase.rpc(
-      "get_seller_statistics",
-      { seller_id_param: item.user_id },
-    );
-
-    if (sellerStatsError) {
-      console.error("Error fetching seller statistics:", sellerStatsError);
-    }
+    console.log("ratingDistribution", ratingDistribution);
 
     // Compile all data
     return {
       product: item,
       reviews: reviews || [],
       reviewsCount: reviews?.length || 0,
-      ratingDistribution: ratingStats || [],
-      sellerStats: sellerStats || null,
+      averageRating: getAverageRatingFromDistribution(ratingDistribution),
+      ratingDistribution: ratingDistribution,
       userReview,
       userHasPurchased,
       userContext: user
@@ -122,3 +126,58 @@ export const getProductDetail = async (itemId: string) => {
     throw error;
   }
 };
+
+function calculateRatingDistribution(reviews: Review[]): RatingDistribution[] {
+  const distribution: RatingDistribution[] = [];
+  const counts: Record<1 | 2 | 3 | 4 | 5, number> = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+  };
+  const totalCount = reviews.length;
+
+  // Count ratings
+  reviews.forEach((review) => {
+    // Ensure the rating is within valid range (1-5)
+    const rating = review.rating;
+    if (rating >= 1 && rating <= 5) {
+      counts[rating as 1 | 2 | 3 | 4 | 5] += 1;
+    }
+  });
+
+  // Calculate percentages and format
+  for (let i = 5; i >= 1; i--) {
+    const ratingValue = i as 1 | 2 | 3 | 4 | 5;
+    distribution.push({
+      rating_value: ratingValue,
+      count: counts[ratingValue],
+      percentage:
+        totalCount > 0
+          ? Math.round((counts[ratingValue] / totalCount) * 100 * 100) / 100
+          : 0,
+    });
+  }
+
+  return distribution;
+}
+
+function getAverageRatingFromDistribution(
+  ratingDistribution: RatingDistribution[],
+): number {
+  let totalWeightedRating = 0;
+  let totalCount = 0;
+
+  // Sum up the weighted ratings (rating_value * count)
+  ratingDistribution.forEach((item) => {
+    totalWeightedRating += item.rating_value * item.count;
+    totalCount += item.count;
+  });
+
+  // Calculate the weighted average
+  const averageRating = totalCount > 0 ? totalWeightedRating / totalCount : 0;
+
+  // Round to 1 decimal place (optional)
+  return Math.round(averageRating * 10) / 10;
+}

@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Home,
   Search,
@@ -11,6 +10,7 @@ import {
   ShoppingBag,
   MessageCircle,
   BookUser,
+  Map,
 } from "lucide-react";
 import { UserMenu } from "../user-menu";
 import NavbarButton from "./navbar-butons";
@@ -26,18 +26,6 @@ export function Navbar() {
         <Link href="/space/feed" className="mr-6 flex items-center space-x-2 ">
           <Origami className="text-primary/70 hover:text-primary duration-500" />
         </Link>
-        {/* <div className="hidden md:flex flex-1 justify-center"> */}
-        {/*   <form className="w-full max-w-sm"> */}
-        {/*     <div className="relative"> */}
-        {/*       <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" /> */}
-        {/*       <Input */}
-        {/*         type="search" */}
-        {/*         placeholder="Search..." */}
-        {/*         className="pl-8 w-full" */}
-        {/*       /> */}
-        {/*     </div> */}
-        {/*   </form> */}
-        {/* </div> */}
         <div className="flex items-center space-x-4 ml-auto">
           <Button variant="ghost" size="icon" className="md:hidden">
             <Search className="h-5 w-5" />
@@ -60,6 +48,9 @@ export function Navbar() {
               Icon={ShoppingBag}
               redirectionUrl="/space/marketplace"
             />
+          )}
+          {user?.role === "PREMIUM" && (
+            <NavbarButton title="Map" Icon={Map} redirectionUrl="/space/map" />
           )}
           <NavbarButton
             title="Chat"

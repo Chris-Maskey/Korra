@@ -17,6 +17,9 @@ export const buyItem = async (productId: string, quantity: number) => {
     throw new Error("Failed to fetch marketplace item: " + error.message);
   }
 
+  // Calculate total price for passing to success page
+  const totalPrice = marketplaceItem.item_price * quantity;
+
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
@@ -33,8 +36,18 @@ export const buyItem = async (productId: string, quantity: number) => {
       },
     ],
     mode: "payment",
-    success_url: `${process.env.NEXT_PUBLIC_APP_URL}/space/marketplace`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/space/marketplace`,
+    // Update success and cancel URLs to point to our new pages
+    success_url:
+      `${process.env.NEXT_PUBLIC_APP_URL}/space/marketplace/success?` +
+      `orderId={CHECKOUT_SESSION_ID}` +
+      `&productId=${productId}` +
+      `&productName=${encodeURIComponent(marketplaceItem.item_name)}` +
+      `&quantity=${quantity}` +
+      `&totalPrice=${totalPrice}`,
+    cancel_url:
+      `${process.env.NEXT_PUBLIC_APP_URL}/space/marketplace/cancel?` +
+      `error=${encodeURIComponent("Payment was cancelled")}` +
+      `&productId=${productId}`,
   });
 
   return redirect(session.url!);

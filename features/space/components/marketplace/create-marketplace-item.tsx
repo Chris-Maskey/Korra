@@ -196,7 +196,7 @@ const CreateMarketplaceItem = () => {
               disabled={isPending}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Description</FormLabel>
+                  <FormLabel>Quantity</FormLabel>
                   <FormControl>
                     <Input
                       type="number"

@@ -3,7 +3,7 @@
 import type React from "react";
 
 import { useState } from "react";
-import { Loader2, Star, ThumbsDown, ThumbsUp, User } from "lucide-react";
+import { Loader2, Star, User } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -18,7 +18,6 @@ import { Separator } from "@/components/ui/separator";
 import type { Review } from "@/features/space/types";
 import { useGetItemReviews } from "../../hooks/marketplace/use-get-item-reviews";
 import { useCreateReview } from "../../hooks/marketplace/use-create-review";
-// import { useSubmitReviewFeedback } from "../../hooks/marketplace/use-submit-review-feedback";
 
 export default function ProductReviews({
   productId,
@@ -31,7 +30,6 @@ export default function ProductReviews({
 }) {
   const { data: reviews, isLoading } = useGetItemReviews(productId);
   const { mutate: createReview, isPending: isSubmitting } = useCreateReview();
-  // const { mutate: submitFeedback } = useSubmitReviewFeedback(productId);
 
   const [sortBy, setSortBy] = useState("newest");
   const [newReview, setNewReview] = useState({
@@ -65,14 +63,6 @@ export default function ProductReviews({
     );
   };
 
-  // const handleFeedback = (reviewId: string, isHelpful: boolean) => {
-  //   submitFeedback({
-  //     review_id: reviewId,
-  //     is_helpful: isHelpful,
-  //   });
-  // };
-
-  // Calculate rating distribution
   const ratingDistribution = {
     5: Math.round(reviewsCount * 0.65),
     4: Math.round(reviewsCount * 0.2),
@@ -94,8 +84,6 @@ export default function ProductReviews({
             return b.rating - a.rating;
           case "lowest":
             return a.rating - b.rating;
-          case "helpful":
-            return b.helpful_count - a.helpful_count;
           default:
             return 0;
         }
@@ -298,35 +286,6 @@ export default function ProductReviews({
                     {review.content}
                   </p>
                 </div>
-
-                {/* <div className="flex items-center gap-4 mt-3"> */}
-                {/*   <div className="flex items-center gap-1"> */}
-                {/*     <Button */}
-                {/*       variant="ghost" */}
-                {/*       size="sm" */}
-                {/*       className="h-8 px-2" */}
-                {/*       onClick={() => handleFeedback(review.id, true)} */}
-                {/*       disabled={review.user_feedback !== null} */}
-                {/*     > */}
-                {/*       <ThumbsUp */}
-                {/*         className={`h-4 w-4 mr-1 ${review.user_feedback === "helpful" ? "text-primary fill-primary" : ""}`} */}
-                {/*       /> */}
-                {/*       <span>Helpful ({review.helpful_count})</span> */}
-                {/*     </Button> */}
-                {/*     <Button */}
-                {/*       variant="ghost" */}
-                {/*       size="sm" */}
-                {/*       className="h-8 px-2" */}
-                {/*       onClick={() => handleFeedback(review.id, false)} */}
-                {/*       disabled={review.user_feedback !== null} */}
-                {/*     > */}
-                {/*       <ThumbsDown */}
-                {/*         className={`h-4 w-4 mr-1 ${review.user_feedback === "unhelpful" ? "text-primary fill-primary" : ""}`} */}
-                {/*       /> */}
-                {/*       <span>Not helpful ({review.unhelpful_count})</span> */}
-                {/*     </Button> */}
-                {/*   </div> */}
-                {/* </div> */}
               </div>
             ))}
           </div>

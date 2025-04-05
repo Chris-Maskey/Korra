@@ -5,7 +5,7 @@ import { updateSession } from "@/lib/supabase/middleware";
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
-  if (path === "/space") {
+  if (path === "/space" || path === "/") {
     return NextResponse.redirect(new URL("/space/feed", request.url));
   }
 

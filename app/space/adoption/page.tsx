@@ -59,7 +59,6 @@ export default function AdoptionPage() {
   return (
     <div className="bg-background">
       <div className="relative overflow-hidden">
-        <div className="" />
         <div className="container mx-auto px-4 py-8 relative">
           <div className="flex flex-col space-y-6">
             <div className="flex items-center gap-2">

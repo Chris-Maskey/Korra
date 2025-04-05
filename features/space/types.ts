@@ -75,18 +75,6 @@ export type Notification = {
   created_at: string;
 };
 
-// Existing MarketplaceItem type
-export interface MarketplaceItem {
-  id: string;
-  item_name: string;
-  item_type: string;
-  item_price: number;
-  currency?: string;
-  item_description: string;
-  image_url: string;
-  user_id: string;
-}
-
 // Order types
 export type OrderStatus =
   | "pending"
@@ -109,41 +97,43 @@ export interface ShippingAddress {
 
 export interface Order {
   id: string;
+  item_id: string;
+  order_date: string;
+  quantity: number;
+  total_price: number;
   user_id: string;
-  status: OrderStatus;
-  total_amount: number;
-  shipping_address: ShippingAddress;
-  payment_intent_id?: string;
-  created_at: string;
-  updated_at: string;
-  items?: OrderItem[];
 }
 
-export interface OrderItem {
+export interface UserOrder {
   id: string;
-  order_id: string;
   item_id: string;
+  order_date: string;
   quantity: number;
-  price_per_unit: number;
-  created_at: string;
-  item?: MarketplaceItem;
+  total_price: number;
+  user_id: string;
+  item: {
+    id: string;
+    item_name: string;
+    item_price: number;
+    image_url: string;
+  } | null;
 }
 
 // Review types
 export interface Review {
-  id: string;
-  user_id: string;
-  item_id: string;
-  order_id?: string;
-  rating: number;
-  title: string;
-  content: string;
-  helpful_count: number;
-  unhelpful_count: number;
+  content: string | null;
   created_at: string;
-  updated_at: string;
-  user_name?: string;
-  user_feedback?: "helpful" | "unhelpful" | null;
+  id: string;
+  item_id: string;
+  order_id: string | null;
+  rating: number;
+  title: string | null;
+  user_id: string;
+  user: {
+    id: string;
+    full_name: string;
+    avatar_url: string | null;
+  } | null;
 }
 
 export interface ReviewFeedback {
@@ -190,4 +180,16 @@ export interface UpdateReviewInput {
 export interface ReviewFeedbackInput {
   review_id: string;
   is_helpful: boolean;
+}
+
+export interface PetShop {
+  id: string;
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  description: string;
+  services: string[];
+  phone?: string;
+  website?: string;
 }

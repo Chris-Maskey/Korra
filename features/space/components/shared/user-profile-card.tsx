@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { useGetFollowStatus } from "@/features/profiles/hooks/use-get-follow-status";
 import { useGetFollowCounts } from "@/features/profiles/hooks/use-get-follow-counts";
 import { useGetPostCounts } from "@/features/profiles/hooks/use-get-post-counts";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -76,7 +75,11 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
             </span>
           </div>
         )}
-        {state === "expanded" && isLoading && <SkeletonLoader />}
+        {state === "expanded" && isLoading && (
+          <div className="w-full">
+            <SkeletonLoader />
+          </div>
+        )}
       </CardHeader>
       <Separator className="mb-6" />
       {state === "expanded" && (

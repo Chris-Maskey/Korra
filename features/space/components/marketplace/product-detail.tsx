@@ -1,74 +1,85 @@
 "use client";
 
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useCallback, useMemo } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { toast } from "sonner";
-import { ArrowLeft, Minus, Plus, Share, Star } from "lucide-react";
+import { ArrowLeft, Share } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import ProductReviews from "./product-reviews";
-import ProductDetailSkeleton from "./product-detail-skeleton";
-import { BuyButton } from "./buy-button";
 import { useGetProductDetail } from "../../hooks/marketplace/use-get-product-detail";
-import { useParams } from "next/navigation";
-
-const getCurrencySymbol = (currency: string) => {
-  switch (currency) {
-    case "USD":
-      return "$";
-    case "EUR":
-      return "€";
-    case "GBP":
-      return "£";
-    case "JPY":
-      return "¥";
-    case "NPR":
-      return "रू";
-    default:
-      return "$";
-  }
-};
+import ProductDetailSkeleton from "./product-detail-skeleton";
+import ProductReviews from "./product-reviews";
+import { BuyButton } from "./buy-button";
+import { ProductImage } from "./product-image";
+import { ProductHeader } from "./product-header";
+import { QuantitySelector } from "./quantity-selector";
+import { PriceSummary } from "./price-summary";
 
 export default function ProductDetail() {
   const params = useParams<{ productId: string }>();
-  const { data: product, isLoading: loading } = useGetProductDetail(
-    params.productId,
-  );
+  const { data, isLoading, error } = useGetProductDetail(params.productId);
   const [quantity, setQuantity] = useState(1);
 
-  const handleShareProduct = async () => {
-    await navigator.clipboard.writeText(
-      `${process.env.NEXT_PUBLIC_APP_URL}/marketplace/${params.productId}`,
-    );
-    toast.success("Link copied to clipboard");
-  };
+  console.log(data);
 
-  if (loading) {
+  // Extract product and stats from data
+  const product = useMemo(() => data?.product, [data]);
+  const reviewsCount = useMemo(() => data?.reviewsCount || 0, [data]);
+  const averageRating = useMemo(() => data?.averageRating || 0, [data]);
+
+  // Handle quantity changes
+  const handleQuantityDecrease = useCallback(() => {
+    setQuantity((prev) => Math.max(1, prev - 1));
+  }, []);
+
+  const handleQuantityIncrease = useCallback(() => {
+    if (!product) return;
+
+    if (quantity < product.item_quantity) {
+      setQuantity((prev) => prev + 1);
+    } else {
+      toast("Maximum quantity reached", {
+        description: `Only ${product.item_quantity} items available in stock.`,
+      });
+    }
+  }, [quantity, product]);
+
+  // Handle share product
+  const handleShareProduct = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(
+        `${process.env.NEXT_PUBLIC_APP_URL}/marketplace/${params.productId}`,
+      );
+      toast.success("Link copied to clipboard");
+    } catch (err) {
+      toast.error("Failed to copy link");
+      console.error("Failed to copy link:", err);
+    }
+  }, [params.productId]);
+
+  // Show loading state
+  if (isLoading) {
     return <ProductDetailSkeleton />;
   }
 
-  if (!product) {
-    return <div>Product not found</div>;
+  // Show error state
+  if (error || !product) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12">
+        <h2 className="text-xl font-semibold mb-2">
+          Error loading product details
+        </h2>
+        <p className="text-muted-foreground mb-4">
+          {error?.message || "The product could not be found."}
+        </p>
+        <Link href="/space/marketplace">
+          <Button>Return to Marketplace</Button>
+        </Link>
+      </div>
+    );
   }
-
-  const handleQuantityDecrease = () => {
-    setQuantity(Math.max(1, quantity - 1));
-  };
-
-  const handleQuantityIncrease = () => {
-    if (quantity < product.product.item_quantity) {
-      setQuantity(quantity + 1);
-    } else {
-      toast("Maximum quantity reached", {
-        description: `Only ${product.product.item_quantity} items available in stock.`,
-      });
-    }
-  };
-
-  const totalAmount = (product.product.item_price * quantity).toFixed(2);
 
   return (
     <div className="space-y-8">
@@ -79,7 +90,7 @@ export default function ProductDetail() {
           className="flex items-center gap-1 hover:text-primary"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Marketplace
+          <span>Back to Marketplace</span>
         </Link>
       </div>
 
@@ -87,136 +98,69 @@ export default function ProductDetail() {
       <div className="grid md:grid-cols-2 gap-8">
         {/* Product Images */}
         <div className="space-y-4">
-          <div className="border rounded-lg overflow-hidden bg-background">
-            <Image
-              src={product.product.image_url || "/placeholder.svg"}
-              alt={product.product.item_name}
-              width={600}
-              height={600}
-              className="object-fit w-full h-[400px] md:h-[500px]"
-              priority
-            />
-          </div>
+          <ProductImage
+            imageUrl={product.image_url}
+            productName={product.item_name}
+          />
         </div>
 
         {/* Product Info */}
         <div className="space-y-4">
-          <div>
-            <div className="flex items-center justify-between">
-              <Badge variant="outline" className="text-xs font-normal">
-                {product.product.item_type}
-              </Badge>
-              <div className="flex items-center gap-1 text-amber-500">
-                <Star className="h-4 w-4 fill-current" />
-                <span className="text-sm font-medium">
-                  {product.sellerStats
-                    ? product.sellerStats[0].average_rating
-                    : 0}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  ({product.reviewsCount} reviews)
-                </span>
-              </div>
-            </div>
-            <h1 className="text-3xl font-bold mt-2">
-              {product.product.item_name}
-            </h1>
-            <div className="flex items-center mt-2">
-              <span className="text-2xl font-bold">
-                {getCurrencySymbol(product.product.currency)}
-                {product.product.item_price.toFixed(2)}
-              </span>
-              {product.product.item_quantity > 0 ? (
-                <Badge
-                  variant="outline"
-                  className="ml-3 bg-green-50 text-green-700 border-green-200"
-                >
-                  In Stock
-                </Badge>
-              ) : (
-                <Badge
-                  variant="outline"
-                  className="ml-3 bg-red-50 text-red-700 border-red-200"
-                >
-                  Out of Stock
-                </Badge>
-              )}
-            </div>
-          </div>
+          <ProductHeader
+            name={product.item_name}
+            type={product.item_type}
+            price={product.item_price}
+            currency={product.currency}
+            averageRating={averageRating}
+            reviewsCount={reviewsCount}
+            inStock={product.item_quantity > 0}
+            quantity={product.item_quantity}
+          />
 
-          <p className="text-muted-foreground">
-            {product.product.item_description}
-          </p>
+          <p className="text-muted-foreground">{product.item_description}</p>
 
           <Separator />
 
           <div className="space-y-4">
             {/* Quantity */}
-            <div>
-              <label className="text-sm font-medium mb-2 block">Quantity</label>
-              <div className="flex items-center">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handleQuantityDecrease}
-                  disabled={quantity <= 1}
-                >
-                  <Minus className="h-4 w-4" />
-                </Button>
-                <span className="w-12 text-center">{quantity}</span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={handleQuantityIncrease}
-                  disabled={quantity >= product.product.item_quantity}
-                >
-                  <Plus className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
+            <QuantitySelector
+              quantity={quantity}
+              maxQuantity={product.item_quantity}
+              onIncrease={handleQuantityIncrease}
+              onDecrease={handleQuantityDecrease}
+            />
 
             {/* Total Amount */}
-            <div className="bg-muted p-4 rounded-lg mt-4">
-              <div className="flex justify-between items-center">
-                <span className="font-medium">Total:</span>
-                <span className="text-xl font-bold">
-                  {getCurrencySymbol(product.product.currency)}
-                  {totalAmount}
-                </span>
-              </div>
-              <div className="text-xs text-muted-foreground mt-1">
-                {quantity} {quantity === 1 ? "item" : "items"} ×{" "}
-                {getCurrencySymbol(product.product.currency)}
-                {product.product.item_price.toFixed(2)}
-              </div>
-            </div>
+            <PriceSummary
+              quantity={quantity}
+              unitPrice={product.item_price}
+              currency={product.currency}
+            />
           </div>
 
           <Separator />
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
-            <BuyButton productId={product.product.id} quantity={quantity} />
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="icon"
-                className=""
-                onClick={handleShareProduct}
-              >
-                <Share className="h-4 w-4" />
-              </Button>
-            </div>
+            <BuyButton productId={product.id} quantity={quantity} />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleShareProduct}
+              aria-label="Share product"
+            >
+              <Share className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       </div>
 
-      {/* Product Details Tabs */}
+      {/* Product Reviews */}
       <Separator />
       <ProductReviews
         productId={params.productId}
-        rating={product.sellerStats ? product.sellerStats[0].average_rating : 0}
-        reviewsCount={product.reviewsCount}
+        rating={averageRating}
+        reviewsCount={reviewsCount}
       />
     </div>
   );

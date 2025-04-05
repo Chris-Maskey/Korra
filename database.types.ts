@@ -320,73 +320,39 @@ export type Database = {
           },
         ]
       }
-      order_items: {
-        Row: {
-          created_at: string
-          id: string
-          item_id: string
-          order_id: string
-          price_per_unit: number
-          quantity: number
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          item_id: string
-          order_id: string
-          price_per_unit: number
-          quantity: number
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          item_id?: string
-          order_id?: string
-          price_per_unit?: number
-          quantity?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "order_items_order_id_fkey"
-            columns: ["order_id"]
-            isOneToOne: false
-            referencedRelation: "orders"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       orders: {
         Row: {
-          created_at: string
           id: string
-          payment_intent_id: string | null
-          shipping_address: Json
-          status: string
-          total_amount: number
-          updated_at: string
+          item_id: string
+          order_date: string
+          quantity: number
+          total_price: number
           user_id: string
         }
         Insert: {
-          created_at?: string
           id?: string
-          payment_intent_id?: string | null
-          shipping_address: Json
-          status: string
-          total_amount: number
-          updated_at?: string
+          item_id: string
+          order_date?: string
+          quantity?: number
+          total_price: number
           user_id: string
         }
         Update: {
-          created_at?: string
           id?: string
-          payment_intent_id?: string | null
-          shipping_address?: Json
-          status?: string
-          total_amount?: number
-          updated_at?: string
+          item_id?: string
+          order_date?: string
+          quantity?: number
+          total_price?: number
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "orders_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "marketplace"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "orders_user_id_fkey"
             columns: ["user_id"]
@@ -476,93 +442,38 @@ export type Database = {
         }
         Relationships: []
       }
-      review_feedback: {
-        Row: {
-          created_at: string
-          id: string
-          is_helpful: boolean
-          review_id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          is_helpful: boolean
-          review_id: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          is_helpful?: boolean
-          review_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_reviews_profiles"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "review_feedback_review_id_fkey"
-            columns: ["review_id"]
-            isOneToOne: false
-            referencedRelation: "reviews"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       reviews: {
         Row: {
-          content: string
+          content: string | null
           created_at: string
-          helpful_count: number | null
           id: string
-          item_id: string | null
+          item_id: string
           order_id: string | null
           rating: number
-          title: string
-          unhelpful_count: number | null
-          updated_at: string
+          title: string | null
           user_id: string
         }
         Insert: {
-          content: string
+          content?: string | null
           created_at?: string
-          helpful_count?: number | null
           id?: string
-          item_id?: string | null
+          item_id: string
           order_id?: string | null
           rating: number
-          title: string
-          unhelpful_count?: number | null
-          updated_at?: string
+          title?: string | null
           user_id: string
         }
         Update: {
-          content?: string
+          content?: string | null
           created_at?: string
-          helpful_count?: number | null
           id?: string
-          item_id?: string | null
+          item_id?: string
           order_id?: string | null
           rating?: number
-          title?: string
-          unhelpful_count?: number | null
-          updated_at?: string
+          title?: string | null
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "fk_reviews_profiles"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "reviews_item_id_fkey"
             columns: ["item_id"]
@@ -575,6 +486,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

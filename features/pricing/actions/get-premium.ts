@@ -31,7 +31,7 @@ export const getPremium = async () => {
     },
     mode: "subscription",
     success_url: `${process.env.NEXT_PUBLIC_APP_URL}/space/feed`,
-    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}`,
+    cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/space/feed`,
   });
 
   if (user.id) {
