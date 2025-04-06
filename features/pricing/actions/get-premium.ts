@@ -3,7 +3,7 @@
 import { stripe } from "@/lib/stripe";
 import { createClient } from "@/lib/supabase/server";
 
-export const getPremium = async () => {
+export const getPremium = async (plan: "PREMIUM" | "ORGANIZATION") => {
   const supabase = await createClient();
 
   const {
@@ -22,7 +22,10 @@ export const getPremium = async () => {
   const { url } = await stripe.checkout.sessions.create({
     line_items: [
       {
-        price: "price_1R29nzRrM1sO2KcO1WNFGpYe",
+        price:
+          plan === "PREMIUM"
+            ? "price_1R29nzRrM1sO2KcO1WNFGpYe"
+            : "price_1RAoCTRrM1sO2KcOLqXukiSk",
         quantity: 1,
       },
     ],
@@ -39,7 +42,7 @@ export const getPremium = async () => {
     try {
       const { error } = await supabase
         .from("profiles")
-        .update({ role: "PREMIUM" })
+        .update({ role: plan })
         .eq("id", userId);
 
       if (error) {

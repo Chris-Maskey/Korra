@@ -30,7 +30,7 @@ export const adoptionSchema = z.object({
     .min(10, "Description must be at least 10 characters"),
   petImage: z
     .instanceof(File)
-    .refine((file) => file.size < 0, "Image is required")
+    .refine((file) => file.size > 0, "Image is required")
     .refine(
       (file) => file.size <= MAX_FILE_SIZE,
       "Image size must be less than 5MB",

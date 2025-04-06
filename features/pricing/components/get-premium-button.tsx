@@ -3,11 +3,15 @@
 import { useGetPremium } from "../hooks/use-get-premium";
 import { Button } from "@/components/ui/button";
 
-export const GetPremiumButton = () => {
+export const GetPremiumButton = ({
+  plan,
+}: {
+  plan: "PREMIUM" | "ORGANIZATION";
+}) => {
   const { mutateAsync: getPremium, isPending } = useGetPremium();
 
   const handleGetPremium = async () => {
-    await getPremium();
+    await getPremium(plan);
   };
 
   return (

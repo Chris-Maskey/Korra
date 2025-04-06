@@ -1,4 +1,3 @@
-// hooks/use-update-user.ts
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
@@ -8,9 +7,9 @@ import type {
   UseMutationResult,
 } from "@tanstack/react-query";
 import type { Tables } from "@/database.types";
-import type { settingsschema } from "../schema";
 import { updateUser } from "../actions/update-user";
 import { toast } from "sonner";
+import type { settingSchema } from "../schema";
 
 type ErrorType = { message: string };
 
@@ -20,10 +19,10 @@ export const useUpdateUser = (options?: {
 }): UseMutationResult<
   Tables<"profiles">,
   ErrorType,
-  (typeof settingsschema)["_output"]
+  (typeof settingSchema)["_output"]
 > => {
   return useMutation({
-    mutationFn: (data: (typeof settingsschema)["_output"]) => updateUser(data),
+    mutationFn: (data: (typeof settingSchema)["_output"]) => updateUser(data),
     onMutate: (data) => {
       toast.promise(updateUser(data), {
         loading: "Updating Profile...",

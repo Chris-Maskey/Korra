@@ -42,14 +42,14 @@ export function Navbar() {
             Icon={PawPrint}
             redirectionUrl="/space/adoption"
           />
-          {user?.role === "PREMIUM" && (
+          {user?.role !== "BASIC" && (
             <NavbarButton
               title="Marketplace"
               Icon={ShoppingBag}
               redirectionUrl="/space/marketplace"
             />
           )}
-          {user?.role === "PREMIUM" && (
+          {user?.role !== "BASIC" && (
             <NavbarButton title="Map" Icon={Map} redirectionUrl="/space/map" />
           )}
           <NavbarButton

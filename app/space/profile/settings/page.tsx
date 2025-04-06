@@ -571,7 +571,6 @@ export default function Settings() {
               </Form>
             </CardContent>
           </Card>
-          ;
         </TabsContent>
 
         {user?.role === "ORGANIZATION" && (

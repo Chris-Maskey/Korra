@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { HandCoins, Heart, MessageCircle, PawPrint } from "lucide-react";
+import { HandCoins, MessageCircle, PawPrint } from "lucide-react";
 import { startTransition, useOptimistic, useState } from "react";
 import { useLikePost } from "../../../hooks/feed/use-like-post";
 import { Tables } from "@/database.types";

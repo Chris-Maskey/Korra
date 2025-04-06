@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useGetMarketplaceItem } from "@/features/space/hooks/marketplace/use-get-marketplace-item";
 import CreateMarketplaceItem from "@/features/space/components/marketplace/create-marketplace-item";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const MarketplacePage = () => {
   const { ref, inView } = useInView();
@@ -27,7 +27,7 @@ const MarketplacePage = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [debouncedSearch] = useDebounce(searchQuery, 500);
 
-  // const router = useRouter();
+  const router = useRouter();
 
   const {
     data,
@@ -50,11 +50,11 @@ const MarketplacePage = () => {
     }
   }, [error]);
 
-  // useEffect(() => {
-  //   if (user?.role === "BASIC") {
-  //     router.push("/space/feed");
-  //   }
-  // }, [user?.role, router]);
+  useEffect(() => {
+    if (user?.role === "BASIC") {
+      router.push("/space/feed");
+    }
+  }, [user?.role, router]);
 
   const marketplaceItems =
     data?.pages.flatMap((page) => page.marketplaceItem) || [];

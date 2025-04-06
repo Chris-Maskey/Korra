@@ -12,6 +12,7 @@ import Link from "next/link";
 import { useGetFollowCounts } from "@/features/profiles/hooks/use-get-follow-counts";
 import { useGetPostCounts } from "@/features/profiles/hooks/use-get-post-counts";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type UserProfileCardProps = {
   state: "expanded" | "collapsed";
@@ -45,13 +46,17 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
             )}
           >
             {user && user.avatar_url ? (
-              <Image
-                src={user.avatar_url}
-                alt={`${user.full_name}'s avatar`}
-                width={120}
-                height={120}
-                className="rounded-full"
-              />
+              <Avatar className="h-full w-full">
+                <AvatarImage
+                  src={user.avatar_url}
+                  alt={user?.full_name || "User"}
+                  width={120}
+                  height={120}
+                />
+                <AvatarFallback>
+                  {user?.full_name?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
             ) : (
               <Bot
                 className={cn(

@@ -22,8 +22,6 @@ export default function ProductDetail() {
   const { data, isLoading, error } = useGetProductDetail(params.productId);
   const [quantity, setQuantity] = useState(1);
 
-  console.log(data);
-
   // Extract product and stats from data
   const product = useMemo(() => data?.product, [data]);
   const reviewsCount = useMemo(() => data?.reviewsCount || 0, [data]);
@@ -142,7 +140,11 @@ export default function ProductDetail() {
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-3">
-            <BuyButton productId={product.id} quantity={quantity} />
+            <BuyButton
+              productId={product.id}
+              quantity={quantity}
+              disabled={!product.item_quantity}
+            />
             <Button
               variant="outline"
               size="icon"

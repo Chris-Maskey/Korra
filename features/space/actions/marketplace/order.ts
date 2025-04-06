@@ -59,8 +59,6 @@ export async function createOrder(
       throw new Error(orderError.message);
     }
 
-    // The trigger will automatically reduce the item quantity
-
     revalidatePath(`/space/marketplace/${itemId}`);
 
     return { success: true, data: order };
