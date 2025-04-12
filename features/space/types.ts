@@ -46,6 +46,7 @@ export type AdoptionPost = {
   image_url: string;
   pet_age: number;
   pet_age_unit: Database["public"]["Enums"]["pet_age-Unit"] | null;
+  adoption_status: Database["public"]["Enums"]["adoption_status"];
   pet_description: string;
   pet_name: string;
   pet_type: string;
@@ -183,13 +184,43 @@ export interface ReviewFeedbackInput {
 }
 
 export interface PetShop {
-  id: string;
-  name: string;
   address: string;
+  created_at: string;
+  description: string;
+  email: string | null;
+  id: string;
   latitude: number;
   longitude: number;
-  description: string;
+  name: string;
+  opening_hours: string | null;
+  phone: string | null;
   services: string[];
-  phone?: string;
-  website?: string;
+  updated_at: string;
+  user_id: string;
+  website: string | null;
+}
+
+export interface ServiceOption {
+  label: string;
+  value: string;
+}
+export interface DashboardRevenueData {
+  previousMonthRevenue: number;
+  currentMonthRevenue: number;
+  revenueGrowth: number;
+  growthRate: "up" | "down";
+}
+
+export interface DashboardEngagementData {
+  previousMonthEngagement: number;
+  currentMonthEngagement: number;
+  engagementGrowth: number;
+  growthRate: "up" | "down";
+}
+
+export interface DashboardAdoptionData {
+  previousMonthAdoption: number;
+  currentMonthAdoption: number;
+  adoptionGrowth: number;
+  growthRate: "up" | "down";
 }

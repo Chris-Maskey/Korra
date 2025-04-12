@@ -17,6 +17,7 @@ export default function OrderSuccessPage() {
 
   const orderDetails = useMemo(() => {
     const orderId = searchParams.get("orderId");
+    const vendorId = searchParams.get("vendorId");
     const productId = searchParams.get("productId");
     const productName = searchParams.get("productName");
     const quantity = Number(searchParams.get("quantity"));
@@ -26,6 +27,7 @@ export default function OrderSuccessPage() {
 
     return {
       orderId,
+      vendorId: vendorId || "",
       productId,
       productName: productName || "Product",
       quantity: isNaN(quantity) ? 1 : quantity,
@@ -39,7 +41,11 @@ export default function OrderSuccessPage() {
       return;
     }
 
-    createOrder(orderDetails.productId, orderDetails.quantity).catch((err) => {
+    createOrder(
+      orderDetails.productId,
+      orderDetails.quantity,
+      orderDetails.vendorId,
+    ).catch((err) => {
       console.error("Failed to place order:", err);
     });
   }, [orderDetails, router]);

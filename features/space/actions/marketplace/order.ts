@@ -8,6 +8,7 @@ import { Order, UserOrder } from "../../types";
 export async function createOrder(
   itemId: string,
   quantity: number,
+  vendorId: string,
 ): Promise<{ success: boolean; data?: Order; error?: string }> {
   try {
     const supabase = await createClient();
@@ -51,6 +52,7 @@ export async function createOrder(
         item_id: itemId,
         quantity: quantity,
         total_price: totalPrice,
+        vendor_id: vendorId,
       })
       .select()
       .single();

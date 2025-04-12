@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-
 import {
   Card,
   CardContent,
@@ -9,8 +8,13 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-
-import { EllipsisIcon, MessageCircle, Share, Trash2 } from "lucide-react";
+import {
+  EllipsisIcon,
+  MessageCircle,
+  PawPrint,
+  Share,
+  Trash2,
+} from "lucide-react";
 import { AdoptionPost } from "../../types";
 import {
   DropdownMenu,
@@ -20,6 +24,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDeleteAdoptionPost } from "../../hooks/adoption/use-delete-adoption-post";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useChangeAdoptionStatus } from "../../hooks/adoption/use-change-adoption-status";
 
 type AdoptionCardProps = {
   adoption: AdoptionPost;
@@ -30,8 +41,31 @@ const AdoptionCard = ({ adoption, userId }: AdoptionCardProps) => {
   const { mutateAsync: deleteAdoptionPost, isPending: deletePending } =
     useDeleteAdoptionPost();
 
+  const { mutateAsync: changeAdoptionStatus, isPending: changePending } =
+    useChangeAdoptionStatus();
+
   const handleDelete = async () => {
     await deleteAdoptionPost(adoption.id);
+  };
+
+  const handleAdopt = async () => {
+    await changeAdoptionStatus({
+      adoptionId: adoption.id,
+      adoptionStatus: "ADOPTED",
+    });
+  };
+
+  const getStatusMessage = (status: string) => {
+    switch (status) {
+      case "ADOPTED":
+        return "This pet has found a loving home!";
+      case "AVAILABLE":
+        return "This pet is looking for a loving home.";
+      case "PENDING":
+        return "Adoption is pending. Stay tuned!";
+      default:
+        return "Adoption status unknown.";
+    }
   };
 
   return (
@@ -48,7 +82,23 @@ const AdoptionCard = ({ adoption, userId }: AdoptionCardProps) => {
       <CardContent className="p-4">
         <div className="flex justify-between items-start">
           <div>
-            <h3 className="font-semibold text-lg">{adoption.pet_name}</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="font-semibold text-lg">{adoption.pet_name}</h3>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    {adoption.adoption_status === "ADOPTED" ? (
+                      <span>🏠</span>
+                    ) : (
+                      <span>📣</span>
+                    )}
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{getStatusMessage(adoption.adoption_status)}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </div>
             <p className="text-sm text-muted-foreground">
               {adoption.pet_type} • {adoption.pet_age} {adoption.pet_age_unit}
             </p>
@@ -64,8 +114,20 @@ const AdoptionCard = ({ adoption, userId }: AdoptionCardProps) => {
             <DropdownMenuContent className="w-44" align="end" forceMount>
               <DropdownMenuItem
                 className="cursor-pointer text-xs"
+                onClick={handleAdopt}
+                disabled={
+                  changePending ||
+                  deletePending ||
+                  adoption.adoption_status === "ADOPTED"
+                }
+              >
+                <PawPrint className="mr-1 size-1" />
+                <span>Mark as Adopted</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="cursor-pointer text-xs"
                 onClick={handleDelete}
-                disabled={deletePending}
+                disabled={deletePending || changePending}
               >
                 <Trash2 className="mr-1 size-1" />
                 <span>Delete</span>

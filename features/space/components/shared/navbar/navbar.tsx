@@ -11,6 +11,7 @@ import {
   MessageCircle,
   BookUser,
   Map,
+  ChartLine,
 } from "lucide-react";
 import { UserMenu } from "../user-menu";
 import NavbarButton from "./navbar-butons";
@@ -51,6 +52,13 @@ export function Navbar() {
           )}
           {user?.role !== "BASIC" && (
             <NavbarButton title="Map" Icon={Map} redirectionUrl="/space/map" />
+          )}
+          {user?.role !== "BASIC" && (
+            <NavbarButton
+              title="Dashboard"
+              Icon={ChartLine}
+              redirectionUrl="/space/profile/dashboard"
+            />
           )}
           <NavbarButton
             title="Chat"

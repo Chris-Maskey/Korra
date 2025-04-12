@@ -70,3 +70,28 @@ export const messageSchema = z.object({
     })
     .optional(),
 });
+
+export const locationSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
+  address: z.string().min(5, { message: "Please enter a valid address" }),
+  latitude: z.coerce.number().min(-90).max(90),
+  longitude: z.coerce.number().min(-180).max(180),
+  description: z
+    .string()
+    .min(10, { message: "Description must be at least 10 characters" }),
+  services: z
+    .array(z.string())
+    .min(1, { message: "Select at least one service" }),
+  phone: z.string().optional(),
+  website: z
+    .string()
+    .url({ message: "Please enter a valid URL" })
+    .optional()
+    .or(z.literal("")),
+  email: z
+    .string()
+    .email({ message: "Please enter a valid email" })
+    .optional()
+    .or(z.literal("")),
+  opening_hours: z.string().optional(),
+});

@@ -11,6 +11,7 @@ export type Database = {
     Tables: {
       adoption: {
         Row: {
+          adoption_status: Database["public"]["Enums"]["adoption_status"]
           created_at: string | null
           id: string
           image_url: string
@@ -22,6 +23,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          adoption_status?: Database["public"]["Enums"]["adoption_status"]
           created_at?: string | null
           id?: string
           image_url: string
@@ -33,6 +35,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          adoption_status?: Database["public"]["Enums"]["adoption_status"]
           created_at?: string | null
           id?: string
           image_url?: string
@@ -157,6 +160,65 @@ export type Database = {
           },
           {
             foreignKeyName: "likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      locations: {
+        Row: {
+          address: string
+          created_at: string
+          description: string
+          email: string | null
+          id: string
+          latitude: number
+          longitude: number
+          name: string
+          opening_hours: string | null
+          phone: string | null
+          services: string[]
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          address: string
+          created_at?: string
+          description: string
+          email?: string | null
+          id?: string
+          latitude: number
+          longitude: number
+          name: string
+          opening_hours?: string | null
+          phone?: string | null
+          services: string[]
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          address?: string
+          created_at?: string
+          description?: string
+          email?: string | null
+          id?: string
+          latitude?: number
+          longitude?: number
+          name?: string
+          opening_hours?: string | null
+          phone?: string | null
+          services?: string[]
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "locations_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
@@ -328,6 +390,7 @@ export type Database = {
           quantity: number
           total_price: number
           user_id: string
+          vendor_id: string
         }
         Insert: {
           id?: string
@@ -336,6 +399,7 @@ export type Database = {
           quantity?: number
           total_price: number
           user_id: string
+          vendor_id: string
         }
         Update: {
           id?: string
@@ -344,6 +408,7 @@ export type Database = {
           quantity?: number
           total_price?: number
           user_id?: string
+          vendor_id?: string
         }
         Relationships: [
           {
@@ -356,6 +421,13 @@ export type Database = {
           {
             foreignKeyName: "orders_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_vendor_id_fkey"
+            columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -503,28 +575,19 @@ export type Database = {
     }
     Functions: {
       calculate_item_average_rating: {
-        Args: {
-          item_id_param: string
-        }
+        Args: { item_id_param: string }
         Returns: number
       }
       decrement_quantity: {
-        Args: {
-          product_id: string
-          decrement_value: number
-        }
+        Args: { product_id: string; decrement_value: number }
         Returns: undefined
       }
       generate_order_summary: {
-        Args: {
-          order_id_param: string
-        }
+        Args: { order_id_param: string }
         Returns: Json
       }
       get_item_rating_distribution: {
-        Args: {
-          item_id_param: string
-        }
+        Args: { item_id_param: string }
         Returns: {
           rating_value: number
           count: number
@@ -532,15 +595,21 @@ export type Database = {
         }[]
       }
       get_item_reviews_count: {
-        Args: {
-          item_id_param: string
-        }
+        Args: { item_id_param: string }
         Returns: number
       }
+      get_monthly_orders_growth: {
+        Args: { vendor_id?: string }
+        Returns: {
+          month: string
+          total_orders: number
+          previous_total: number
+          growth_rate: number
+          growth_status: string
+        }[]
+      }
       get_popular_items: {
-        Args: {
-          limit_param?: number
-        }
+        Args: { limit_param?: number }
         Returns: {
           item_id: string
           item_name: string
@@ -553,10 +622,7 @@ export type Database = {
         }[]
       }
       get_related_items: {
-        Args: {
-          item_id_param: string
-          limit_param?: number
-        }
+        Args: { item_id_param: string; limit_param?: number }
         Returns: {
           item_id: string
           item_name: string
@@ -566,9 +632,7 @@ export type Database = {
         }[]
       }
       get_seller_statistics: {
-        Args: {
-          seller_id_param: string
-        }
+        Args: { seller_id_param: string }
         Returns: {
           total_sales: number
           total_orders: number
@@ -578,16 +642,11 @@ export type Database = {
         }[]
       }
       get_unread_count: {
-        Args: {
-          group_id: string
-          user_id: string
-        }
+        Args: { group_id: string; user_id: string }
         Returns: number
       }
       get_user_order_history: {
-        Args: {
-          user_id_param: string
-        }
+        Args: { user_id_param: string }
         Returns: {
           order_id: string
           order_status: string
@@ -598,23 +657,15 @@ export type Database = {
         }[]
       }
       has_user_purchased_item: {
-        Args: {
-          user_id_param: string
-          item_id_param: string
-        }
+        Args: { user_id_param: string; item_id_param: string }
         Returns: boolean
       }
       increment: {
-        Args: {
-          x: number
-        }
+        Args: { x: number }
         Returns: number
       }
       search_items: {
-        Args: {
-          search_query: string
-          limit_param?: number
-        }
+        Args: { search_query: string; limit_param?: number }
         Returns: {
           item_id: string
           item_name: string
@@ -635,6 +686,7 @@ export type Database = {
       }
     }
     Enums: {
+      adoption_status: "ADOPTED" | "AVAILABLE"
       currency: "USD" | "NPR" | "EUR" | "JPY" | "GBP"
       "pet_age-Unit": "months" | "years" | "month" | "year"
       post_type: "NORMAL" | "HELP" | "ADOPTION"
@@ -646,27 +698,29 @@ export type Database = {
   }
 }
 
-type PublicSchema = Database[Extract<keyof Database, "public">]
+type DefaultSchema = Database[Extract<keyof Database, "public">]
 
 export type Tables<
-  PublicTableNameOrOptions extends
-    | keyof (PublicSchema["Tables"] & PublicSchema["Views"])
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-        Database[PublicTableNameOrOptions["schema"]]["Views"])
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
-        PublicSchema["Views"])
-    ? (PublicSchema["Tables"] &
-        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -674,20 +728,22 @@ export type Tables<
     : never
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -695,20 +751,22 @@ export type TablesInsert<
     : never
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends
-    | keyof PublicSchema["Tables"]
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof Database },
-  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -716,21 +774,23 @@ export type TablesUpdate<
     : never
 
 export type Enums<
-  PublicEnumNameOrOptions extends
-    | keyof PublicSchema["Enums"]
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof Database },
-  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof PublicSchema["CompositeTypes"]
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof Database
@@ -739,6 +799,18 @@ export type CompositeTypes<
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
   ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
-    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
+
+export const Constants = {
+  public: {
+    Enums: {
+      adoption_status: ["ADOPTED", "AVAILABLE"],
+      currency: ["USD", "NPR", "EUR", "JPY", "GBP"],
+      "pet_age-Unit": ["months", "years", "month", "year"],
+      post_type: ["NORMAL", "HELP", "ADOPTION"],
+      user_role: ["BASIC", "PREMIUM", "ORGANIZATION"],
+    },
+  },
+} as const

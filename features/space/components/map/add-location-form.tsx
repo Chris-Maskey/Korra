@@ -10,13 +10,11 @@ import { useRouter } from "next/navigation";
 import {
   MapPin,
   Store,
-  MapIcon,
   Phone,
   Globe,
   FileText,
   Save,
   Loader2,
-  ImageIcon,
   Building,
   Navigation,
   Mail,
@@ -36,45 +34,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { PetShop } from "../../types";
-import { mockPetShops } from "./pet-shop-map";
 import { toast } from "sonner";
-
-const formSchema = z.object({
-  name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  address: z.string().min(5, { message: "Please enter a valid address" }),
-  latitude: z.coerce.number().min(-90).max(90),
-  longitude: z.coerce.number().min(-180).max(180),
-  description: z
-    .string()
-    .min(10, { message: "Description must be at least 10 characters" }),
-  services: z
-    .array(z.string())
-    .min(1, { message: "Select at least one service" }),
-  phone: z.string().optional(),
-  website: z
-    .string()
-    .url({ message: "Please enter a valid URL" })
-    .optional()
-    .or(z.literal("")),
-  email: z
-    .string()
-    .email({ message: "Please enter a valid email" })
-    .optional()
-    .or(z.literal("")),
-  openingHours: z.string().optional(),
-});
+import { locationSchema } from "../../schema";
+import { useCreateLocation } from "../../hooks/adoption/map/use-create-location";
 
 const serviceOptions = [
   { id: "supplies", label: "Pet Supplies" },
@@ -88,12 +52,12 @@ const serviceOptions = [
 
 export default function AddLocationForm() {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [shopImagePreview, setShopImagePreview] = useState<string | null>(null);
-  const [mapPreview, setMapPreview] = useState<string | null>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { mutateAsync: createLocation, isPending: isSubmitting } =
+    useCreateLocation();
+
+  const form = useForm<z.infer<typeof locationSchema>>({
+    resolver: zodResolver(locationSchema),
     defaultValues: {
       name: "",
       address: "",
@@ -108,65 +72,15 @@ export default function AddLocationForm() {
     },
   });
 
-  const handleShopImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setShopImagePreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleMapImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setMapPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsSubmitting(true);
-
+  async function onSubmit(values: z.infer<typeof locationSchema>) {
     try {
-      // In a real app, this would be an API call to save to Supabase
-      // For now, we'll just simulate adding to our mock data
-      const newShop: PetShop = {
-        id: (mockPetShops.length + 1).toString(),
-        name: values.name,
-        address: values.address,
-        latitude: values.latitude,
-        longitude: values.longitude,
-        description: values.description,
-        services: values.services,
-        phone: values.phone || undefined,
-        website: values.website || undefined,
-      };
+      createLocation(values);
 
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // In a real app, we would update the state with the new shop
-      console.log("New shop added:", newShop);
-
-      toast.success("Location added successfully");
-
-      form.reset();
-      setShopImagePreview(null);
-      setMapPreview(null);
-
-      // Navigate back to map view
-      router.push("/map");
+      router.push("/space/map");
     } catch (error) {
       console.error("Error adding location:", error);
       toast.error("Failed to add location");
     } finally {
-      setIsSubmitting(false);
     }
   }
 
@@ -210,79 +124,6 @@ export default function AddLocationForm() {
       <CardContent className="p-6">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            {/* Shop Image Section */}
-            <div className="space-y-4">
-              <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-                <FormLabel className="text-base">Shop Image</FormLabel>
-                <Sheet>
-                  <SheetTrigger asChild>
-                    <Button variant="outline" type="button" className="gap-2">
-                      <ImageIcon className="h-4 w-4" />
-                      Upload Image
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent>
-                    <SheetHeader>
-                      <SheetTitle>Upload Shop Image</SheetTitle>
-                      <SheetDescription>
-                        Upload an image of your pet shop to help customers
-                        recognize your business. Recommended size: 1200x800
-                        pixels.
-                      </SheetDescription>
-                    </SheetHeader>
-                    <div className="grid gap-4 py-4">
-                      <div className="flex flex-col items-center justify-center gap-4">
-                        <div className="relative w-full h-40 rounded-md overflow-hidden border border-border">
-                          {shopImagePreview ? (
-                            <div
-                              className="w-full h-full bg-cover bg-center"
-                              style={{
-                                backgroundImage: `url(${shopImagePreview})`,
-                              }}
-                            />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-muted/50">
-                              <Store className="h-10 w-10 text-muted-foreground/60" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="grid w-full items-center gap-1.5">
-                          <Label htmlFor="shop_image">Upload Image</Label>
-                          <Input
-                            id="shop_image"
-                            type="file"
-                            accept="image/*"
-                            onChange={handleShopImageChange}
-                          />
-                          <p className="text-xs text-muted-foreground">
-                            Maximum file size: 10MB. Supported formats: JPEG,
-                            PNG, GIF.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </SheetContent>
-                </Sheet>
-              </div>
-
-              <div className="relative w-full h-40 rounded-md overflow-hidden border border-border">
-                {shopImagePreview ? (
-                  <div
-                    className="w-full h-full bg-cover bg-center"
-                    style={{ backgroundImage: `url(${shopImagePreview})` }}
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-primary/30 to-primary/10">
-                    <p className="text-muted-foreground text-sm">
-                      No shop image selected
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <Separator className="my-4" />
-
             {/* Basic Information */}
             <div className="grid gap-6">
               <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
@@ -376,76 +217,6 @@ export default function AddLocationForm() {
                       </FormItem>
                     )}
                   />
-                </div>
-              </div>
-
-              {/* Map Preview */}
-              <div className="space-y-4">
-                <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-                  <FormLabel className="text-base">Location Map</FormLabel>
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button variant="outline" type="button" className="gap-2">
-                        <MapIcon className="h-4 w-4" />
-                        Upload Map Image
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent>
-                      <SheetHeader>
-                        <SheetTitle>Upload Map Image</SheetTitle>
-                        <SheetDescription>
-                          Upload a map image showing your location to help
-                          customers find you.
-                        </SheetDescription>
-                      </SheetHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="flex flex-col items-center justify-center gap-4">
-                          <div className="relative w-full h-40 rounded-md overflow-hidden border border-border">
-                            {mapPreview ? (
-                              <div
-                                className="w-full h-full bg-cover bg-center"
-                                style={{
-                                  backgroundImage: `url(${mapPreview})`,
-                                }}
-                              />
-                            ) : (
-                              <div className="w-full h-full flex items-center justify-center bg-muted/50">
-                                <MapIcon className="h-10 w-10 text-muted-foreground/60" />
-                              </div>
-                            )}
-                          </div>
-                          <div className="grid w-full items-center gap-1.5">
-                            <Label htmlFor="map_image">Upload Map</Label>
-                            <Input
-                              id="map_image"
-                              type="file"
-                              accept="image/*"
-                              onChange={handleMapImageChange}
-                            />
-                            <p className="text-xs text-muted-foreground">
-                              Maximum file size: 10MB. Supported formats: JPEG,
-                              PNG, GIF.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    </SheetContent>
-                  </Sheet>
-                </div>
-
-                <div className="relative w-full h-40 rounded-md overflow-hidden border border-border">
-                  {mapPreview ? (
-                    <div
-                      className="w-full h-full bg-cover bg-center"
-                      style={{ backgroundImage: `url(${mapPreview})` }}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-blue-100 to-blue-50">
-                      <p className="text-muted-foreground text-sm">
-                        No map image selected
-                      </p>
-                    </div>
-                  )}
                 </div>
               </div>
 
@@ -609,7 +380,7 @@ export default function AddLocationForm() {
                 {/* Opening Hours */}
                 <FormField
                   control={form.control}
-                  name="openingHours"
+                  name="opening_hours"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="flex items-center gap-2">

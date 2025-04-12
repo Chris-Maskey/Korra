@@ -40,6 +40,7 @@ export const buyItem = async (productId: string, quantity: number) => {
     success_url:
       `${process.env.NEXT_PUBLIC_APP_URL}/space/marketplace/success?` +
       `orderId={CHECKOUT_SESSION_ID}` +
+      `&vendorId=${marketplaceItem.user_id}` +
       `&productId=${productId}` +
       `&productName=${encodeURIComponent(marketplaceItem.item_name)}` +
       `&quantity=${quantity}` +

@@ -1,4 +1,5 @@
 import { HandCoins, Home, PawPrint, Store } from "lucide-react";
+import { ServiceOption } from "./types";
 
 export const sidebarItems = [
   {
@@ -25,4 +26,17 @@ export const sidebarItems = [
     icon: PawPrint,
     isPremium: false,
   },
+];
+
+/**
+ * Available pet shop services
+ */
+export const SERVICES: ServiceOption[] = [
+  { label: "Pet Supplies", value: "supplies" },
+  { label: "Grooming", value: "grooming" },
+  { label: "Veterinary", value: "veterinary" },
+  { label: "Adoption", value: "adoption" },
+  { label: "Training", value: "training" },
+  { label: "Boarding", value: "boarding" },
+  { label: "Daycare", value: "daycare" },
 ];
