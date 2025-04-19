@@ -9,19 +9,10 @@ import {
 } from "@/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-const vibrantColors = {
-  blue: "hsl(220, 90%, 60%)", // A bright blue
-  green: "hsl(140, 90%, 50%)", // A vivid green
-  orange: "hsl(40, 100%, 60%)", // A saturated orange
-  purple: "hsl(280, 80%, 55%)", // A rich purple
-  teal: "hsl(180, 70%, 50%)", // A vibrant teal
-  pink: "hsl(330, 100%, 65%)", // A vibrant pink
-};
-
 const chartConfig = {
   revenue: {
     label: "Revenue",
-    color: vibrantColors.teal, // Using the bright pink
+    color: "hsl(var(--chart-5))",
   },
 } satisfies ChartConfig;
 

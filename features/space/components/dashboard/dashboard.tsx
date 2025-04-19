@@ -7,6 +7,9 @@ import {
 import { getUserEngagement } from "../../actions/dashboard/get-user-engagement";
 import { RevenueChart } from "./revenue-chart";
 import { SectionCard } from "./section-card";
+import { DashboardTable } from "./dashboard-table";
+import { AdoptionChart } from "./adoption-chart";
+import { UserEngagementChart } from "./user-engagement-chart";
 
 export type SectionCardType = {
   title: string;
@@ -128,6 +131,11 @@ export const Dashboard = async () => {
         ))}
       </div>
       <RevenueChart data={chartData} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <AdoptionChart />
+        <UserEngagementChart />
+      </div>
+      <DashboardTable />
     </div>
   );
 };

@@ -108,3 +108,43 @@ export const getTotalMarketplaceRevenue = async () => {
 
   return data;
 };
+
+export const getMarketplaceOrders = async () => {
+  const supabase = await createClient();
+
+  const { data: user, error: authError } = await supabase.auth.getUser();
+
+  if (!user || authError) {
+    throw new Error(authError?.message || "Authentication required");
+  }
+
+  const { data, error } = await supabase
+    .from("orders")
+    .select(
+      `
+        id,
+        order_date,
+        total_price,
+        quantity,
+        item:marketplace(
+          id,
+          item_name,
+          item_price,
+          image_url
+        ),
+        user:profiles!orders_user_id_fkey(
+          id,
+          full_name
+    )
+    `,
+    )
+    .eq("vendor_id", user.user.id)
+    .neq("user_id", user.user.id)
+    .order("order_date", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
