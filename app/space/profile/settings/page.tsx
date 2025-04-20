@@ -5,7 +5,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import type { z } from "zod";
 import { toast } from "sonner";
 import {
   AtSign,
@@ -243,11 +243,10 @@ export default function Settings() {
                             <div className="flex flex-col items-center justify-center gap-4">
                               <div className="relative w-full h-40 rounded-md overflow-hidden border border-border">
                                 {bannerPreview ? (
-                                  <div
-                                    className="w-full h-full bg-cover bg-center"
-                                    style={{
-                                      backgroundImage: `url(${bannerPreview})`,
-                                    }}
+                                  <img
+                                    src={bannerPreview || "/placeholder.svg"}
+                                    alt="Banner preview"
+                                    className="w-full h-full object-cover"
                                   />
                                 ) : (
                                   <div className="w-full h-full flex items-center justify-center bg-muted/50">
@@ -276,9 +275,10 @@ export default function Settings() {
 
                     <div className="relative w-full h-40 rounded-md overflow-hidden border border-border">
                       {bannerPreview ? (
-                        <div
-                          className="w-full h-full bg-cover bg-center"
-                          style={{ backgroundImage: `url(${bannerPreview})` }}
+                        <img
+                          src={bannerPreview || "/placeholder.svg"}
+                          alt="Profile banner"
+                          className="w-full h-full object-cover"
                         />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-r from-primary/30 to-primary/10">
@@ -294,18 +294,21 @@ export default function Settings() {
 
                   {/* Avatar Section */}
                   <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
-                    <Avatar className="h-24 w-24 border border-primary shadow-lg">
-                      <AvatarImage
-                        src={avatarPreview || "/placeholder.svg"}
-                        alt="Profile picture"
-                      />
-                      <AvatarFallback className="text-lg">
-                        {form
-                          .getValues("full_name")
-                          ?.substring(0, 2)
-                          .toUpperCase() || "JD"}
-                      </AvatarFallback>
-                    </Avatar>
+                    <div className="h-24 w-24 rounded-full overflow-hidden border border-primary shadow-lg">
+                      <Avatar className="h-24 w-24">
+                        <AvatarImage
+                          src={avatarPreview || "/placeholder.svg"}
+                          alt="Profile picture"
+                          className="object-cover"
+                        />
+                        <AvatarFallback className="text-lg">
+                          {form
+                            .getValues("full_name")
+                            ?.substring(0, 2)
+                            .toUpperCase() || "JD"}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
 
                     <Sheet>
                       <SheetTrigger asChild>
@@ -323,18 +326,21 @@ export default function Settings() {
                         </SheetHeader>
                         <div className="grid gap-4 py-4">
                           <div className="flex flex-col items-center justify-center gap-4">
-                            <Avatar className="h-32 w-32 border-2 border-primary shadow-lg">
-                              <AvatarImage
-                                src={avatarPreview || "/placeholder.svg"}
-                                alt="Profile picture preview"
-                              />
-                              <AvatarFallback className="text-xl">
-                                {form
-                                  .getValues("full_name")
-                                  ?.substring(0, 2)
-                                  .toUpperCase() || "JD"}
-                              </AvatarFallback>
-                            </Avatar>
+                            <div className="h-32 w-32 rounded-full overflow-hidden border-2 border-primary shadow-lg">
+                              <Avatar className="h-32 w-32">
+                                <AvatarImage
+                                  src={avatarPreview || "/placeholder.svg"}
+                                  alt="Profile picture preview"
+                                  className="object-cover"
+                                />
+                                <AvatarFallback className="text-xl">
+                                  {form
+                                    .getValues("full_name")
+                                    ?.substring(0, 2)
+                                    .toUpperCase() || "JD"}
+                                </AvatarFallback>
+                              </Avatar>
+                            </div>
                             <div className="grid w-full items-center gap-1.5">
                               <Label htmlFor="avatar">Upload Image</Label>
                               <Input

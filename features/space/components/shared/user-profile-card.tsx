@@ -52,6 +52,7 @@ export function UserProfileCard({ state, profileId }: UserProfileCardProps) {
                   alt={user?.full_name || "User"}
                   width={120}
                   height={120}
+                  className="rounded-full object-cover"
                 />
                 <AvatarFallback>
                   {user?.full_name?.charAt(0) || "U"}

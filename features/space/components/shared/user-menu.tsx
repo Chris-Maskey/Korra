@@ -31,6 +31,7 @@ export function UserMenu() {
             <AvatarImage
               src={user?.avatar_url || ""}
               alt={user?.user_name || "User avatar"}
+              className="rounded-full object-cover"
             />
             <AvatarFallback>
               {user?.full_name ? user.full_name[0] : ""}

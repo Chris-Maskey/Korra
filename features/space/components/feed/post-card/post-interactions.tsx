@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { HandCoins, MessageCircle, PawPrint } from "lucide-react";
 import { startTransition, useOptimistic, useState } from "react";
 import { useLikePost } from "../../../hooks/feed/use-like-post";
-import { Tables } from "@/database.types";
-import { Like } from "../../../types";
+import type { Tables } from "@/database.types";
+import type { Like } from "../../../types";
+import { useDonationModal } from "@/context/donation-modal-context";
 
 type PostActionsProps = {
   postId: string;
@@ -14,6 +15,7 @@ type PostActionsProps = {
   likes: Like[];
   numberOfComments: number;
   type: "NORMAL" | "HELP";
+  postOwnerId: string; // Add this prop
 };
 
 const PostActions = ({
@@ -23,8 +25,10 @@ const PostActions = ({
   likes,
   numberOfComments,
   type,
+  postOwnerId,
 }: PostActionsProps) => {
   const { mutateAsync: likePost } = useLikePost();
+  const { openModal } = useDonationModal();
 
   const hasLiked = likes.some((like) => like.user_id === user?.id);
 
@@ -63,6 +67,12 @@ const PostActions = ({
     await likePost(postId);
   };
 
+  const handleDonateClick = () => {
+    if (user && postOwnerId !== user.id) {
+      openModal(postId, postOwnerId);
+    }
+  };
+
   return (
     <div className="flex justify-between w-full">
       <Button
@@ -82,7 +92,10 @@ const PostActions = ({
       <Button
         variant="ghost"
         size="sm"
-        disabled={deletePending || type === "NORMAL"}
+        disabled={
+          deletePending || type === "NORMAL" || !user || postOwnerId === user.id
+        }
+        onClick={handleDonateClick}
       >
         <HandCoins className="w-5 h-5 mr-2" />
         Donate

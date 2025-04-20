@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "sonner";
 import { QueryProvider } from "@/components/query-provider";
+import { DonationModalProvider } from "@/context/donation-modal-context";
+import { ModalProvider } from "@/providers/modal-provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,7 +32,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <DonationModalProvider>
+              <ModalProvider />
+              {children}
+            </DonationModalProvider>
+          </QueryProvider>
           <Toaster />
         </ThemeProvider>
       </body>

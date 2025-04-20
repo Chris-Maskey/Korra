@@ -42,6 +42,7 @@ export function PostCard({
           userId={user?.id || ""}
           created_at={created_at}
           setDeletePending={setDeletePending}
+          type={type}
         />
       </CardHeader>
       <CardContent className="space-y-4">
@@ -66,6 +67,7 @@ export function PostCard({
           likes={likes}
           numberOfComments={numberofComments}
           type={type}
+          postOwnerId={profiles ? profiles.id : ""}
         />
         <PostComment
           comments={comments}

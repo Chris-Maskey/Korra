@@ -52,6 +52,7 @@ export const ProfileHeaderCard = ({
             <AvatarImage
               src={profile.avatar_url || "/placeholder.svg"}
               alt={profile.full_name!}
+              className="object-cover"
             />
             <AvatarFallback className="text-4xl font-medium">
               {profile.full_name!.substring(0, 1).toUpperCase()}
