@@ -1,6 +1,6 @@
 "use client";
 
-import type React from "react";
+import React from "react";
 
 import { useState } from "react";
 import { Loader2, Star, User } from "lucide-react";
@@ -63,13 +63,30 @@ export default function ProductReviews({
     );
   };
 
-  const ratingDistribution = {
-    5: Math.round(reviewsCount * 0.65),
-    4: Math.round(reviewsCount * 0.2),
-    3: Math.round(reviewsCount * 0.1),
-    2: Math.round(reviewsCount * 0.03),
-    1: Math.round(reviewsCount * 0.02),
-  };
+  // Replace the hardcoded ratingDistribution with this dynamic calculation
+  const ratingDistribution = React.useMemo(() => {
+    if (!reviews || reviews.length === 0) {
+      return { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    }
+
+    // Count reviews for each rating
+    const distribution = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+    reviews.forEach((review) => {
+      // Ensure the rating is between 1-5
+      const rating = Math.min(Math.max(Math.round(review.rating), 1), 5);
+      distribution[rating as keyof typeof distribution]++;
+    });
+
+    return distribution;
+  }, [reviews]);
+
+  // Add this calculation for the average rating based on actual reviews
+  const calculatedRating = React.useMemo(() => {
+    if (!reviews || reviews.length === 0) return rating; // Use the prop as fallback
+
+    const sum = reviews.reduce((acc, review) => acc + review.rating, 0);
+    return Number.parseFloat((sum / reviews.length).toFixed(1));
+  }, [reviews, rating]);
 
   // Sort reviews based on selected option
   const sortedReviews = reviews
@@ -102,47 +119,52 @@ export default function ProductReviews({
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`h-6 w-6 ${i < Math.floor(rating) ? "text-yellow-500 fill-yellow-500" : "text-gray-300"}`}
+                  className={`h-6 w-6 ${
+                    i < Math.floor(calculatedRating)
+                      ? "text-yellow-500 fill-yellow-500"
+                      : i < calculatedRating
+                        ? "text-yellow-500 fill-yellow-500 opacity-50"
+                        : "text-gray-300"
+                  }`}
                 />
               ))}
             </div>
             <div>
-              <span className="font-medium text-lg">{rating}</span>
+              <span className="font-medium text-lg">{calculatedRating}</span>
               <span className="text-muted-foreground"> out of 5</span>
             </div>
           </div>
 
           <p className="text-sm text-muted-foreground">
-            {reviewsCount} global ratings
+            {reviews?.length || reviewsCount} global ratings
           </p>
 
           {/* Rating Bars */}
           <div className="space-y-2">
-            {[5, 4, 3, 2, 1].map((star) => (
-              <div key={star} className="flex items-center gap-2">
-                <span className="text-sm min-w-[30px]">{star} star</span>
-                <div className="h-2 bg-muted rounded-full flex-1 overflow-hidden">
-                  <div
-                    className="h-full bg-yellow-400 rounded-full"
-                    style={{
-                      width: `${reviewsCount > 0 ? (ratingDistribution[star as keyof typeof ratingDistribution] / reviewsCount) * 100 : 0}%`,
-                    }}
-                  />
+            {[5, 4, 3, 2, 1].map((star) => {
+              const count =
+                ratingDistribution[star as keyof typeof ratingDistribution];
+              const percentage = reviews?.length
+                ? Math.round((count / reviews.length) * 100)
+                : 0;
+
+              return (
+                <div key={star} className="flex items-center gap-2">
+                  <span className="text-sm min-w-[30px]">{star} star</span>
+                  <div className="h-2 bg-muted rounded-full flex-1 overflow-hidden">
+                    <div
+                      className="h-full bg-yellow-400 rounded-full"
+                      style={{
+                        width: `${percentage}%`,
+                      }}
+                    />
+                  </div>
+                  <span className="text-sm text-muted-foreground min-w-[40px]">
+                    {percentage}%
+                  </span>
                 </div>
-                <span className="text-sm text-muted-foreground min-w-[40px]">
-                  {reviewsCount > 0
-                    ? Math.round(
-                        (ratingDistribution[
-                          star as keyof typeof ratingDistribution
-                        ] /
-                          reviewsCount) *
-                          100,
-                      )
-                    : 0}
-                  %
-                </span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -161,7 +183,11 @@ export default function ProductReviews({
                     className="focus:outline-none"
                   >
                     <Star
-                      className={`h-6 w-6 ${star <= newReview.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`}
+                      className={`h-6 w-6 ${
+                        star <= newReview.rating
+                          ? "text-yellow-400 fill-yellow-400"
+                          : "text-gray-300"
+                      }`}
                     />
                   </button>
                 ))}

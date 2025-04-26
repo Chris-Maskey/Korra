@@ -65,7 +65,9 @@ export const getProductDetail = async (itemId: string) => {
     }
 
     // Calculate rating distribution manually since we might not have the RPC function
-    const ratingDistribution = calculateRatingDistribution(reviews || []);
+    const ratingDistribution = calculateRatingDistribution(
+      (reviews as Review[]) || [],
+    );
 
     // If user is logged in, check if they've reviewed this item
     let userReview = null;
@@ -100,8 +102,6 @@ export const getProductDetail = async (itemId: string) => {
         userHasPurchased = true;
       }
     }
-
-    console.log("ratingDistribution", ratingDistribution);
 
     // Compile all data
     return {

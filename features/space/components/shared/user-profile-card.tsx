@@ -4,7 +4,6 @@ import { useCurrentUser } from "@/features/auth/hooks/use-current-user";
 import { cn } from "@/lib/utils";
 import { Bot, Crown } from "lucide-react";
 import dynamic from "next/dynamic";
-import Image from "next/image";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
