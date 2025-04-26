@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { Order, UserOrder } from "../../types";
+import { Database } from "@/database.types";
 
 // Create a new order
 export async function createOrder(
@@ -121,3 +122,18 @@ export async function getUserOrders(): Promise<{
     };
   }
 }
+
+export const changeOrderStatus = async (
+  orderId: string,
+  orderStatus: Database["public"]["Enums"]["order_status"],
+) => {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("orders")
+    .update({ order_status: orderStatus })
+    .eq("id", orderId);
+  if (error) {
+    throw new Error(error.message);
+  }
+  revalidatePath(`/space/profile/dashboard`);
+};

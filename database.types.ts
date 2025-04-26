@@ -386,6 +386,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          message: string | null
           post_id: string | null
           read: boolean
           recipient_id: string
@@ -396,6 +397,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          message?: string | null
           post_id?: string | null
           read?: boolean
           recipient_id: string
@@ -406,6 +408,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          message?: string | null
           post_id?: string | null
           read?: boolean
           recipient_id?: string
@@ -442,6 +445,7 @@ export type Database = {
           id: string
           item_id: string
           order_date: string
+          order_status: Database["public"]["Enums"]["order_status"]
           quantity: number
           total_price: number
           user_id: string
@@ -451,6 +455,7 @@ export type Database = {
           id?: string
           item_id: string
           order_date?: string
+          order_status?: Database["public"]["Enums"]["order_status"]
           quantity?: number
           total_price: number
           user_id: string
@@ -460,6 +465,7 @@ export type Database = {
           id?: string
           item_id?: string
           order_date?: string
+          order_status?: Database["public"]["Enums"]["order_status"]
           quantity?: number
           total_price?: number
           user_id?: string
@@ -743,6 +749,12 @@ export type Database = {
     Enums: {
       adoption_status: "ADOPTED" | "AVAILABLE"
       currency: "USD" | "NPR" | "EUR" | "JPY" | "GBP"
+      order_status:
+        | "PROCESSING"
+        | "PACKAGING"
+        | "READY _FOR_SHIPPING"
+        | "ON_THE_WAY"
+        | "SHIPPED"
       "pet_age-Unit": "months" | "years" | "month" | "year"
       post_type: "NORMAL" | "HELP" | "ADOPTION"
       user_role: "BASIC" | "PREMIUM" | "ORGANIZATION"
@@ -863,6 +875,13 @@ export const Constants = {
     Enums: {
       adoption_status: ["ADOPTED", "AVAILABLE"],
       currency: ["USD", "NPR", "EUR", "JPY", "GBP"],
+      order_status: [
+        "PROCESSING",
+        "PACKAGING",
+        "READY _FOR_SHIPPING",
+        "ON_THE_WAY",
+        "SHIPPED",
+      ],
       "pet_age-Unit": ["months", "years", "month", "year"],
       post_type: ["NORMAL", "HELP", "ADOPTION"],
       user_role: ["BASIC", "PREMIUM", "ORGANIZATION"],

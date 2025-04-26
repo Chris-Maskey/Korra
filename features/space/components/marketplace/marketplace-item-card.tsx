@@ -77,7 +77,7 @@ const MarketplaceItemCard = ({
       <CardContent className="p-4">
         <div className="flex justify-between items-start">
           <div>
-            <Link href={`/marketplace/${marketplaceItem.id}`}>
+            <Link href={`/space/marketplace/${marketplaceItem.id}`}>
               <h3 className="font-semibold text-lg">
                 {marketplaceItem.item_name}
               </h3>

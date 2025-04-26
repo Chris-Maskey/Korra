@@ -69,7 +69,7 @@ export const DonationModal = () => {
                 variant={isPending ? "outline" : "secondary"}
                 onClick={() => handleDonation(amount)}
                 disabled={isPending}
-                className="h-12 font-medium text-lg hover:scale-105 transition-transform"
+                className="h-12 font-medium text-sm hover:scale-105 transition-transform"
               >
                 ${amount}
               </Button>
@@ -86,8 +86,8 @@ export const DonationModal = () => {
                 inputMode="decimal"
                 value={customAmount}
                 onChange={handleInputChange}
-                placeholder="Custom amount"
-                className="w-full h-12 pl-8 pr-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
+                placeholder="Donation Amount"
+                className="w-full h-12 pl-8 pr-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary placeholder:text-xs"
                 disabled={isPending}
               />
             </div>

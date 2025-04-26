@@ -126,6 +126,7 @@ export const getMarketplaceOrders = async () => {
         order_date,
         total_price,
         quantity,
+        order_status,
         item:marketplace(
           id,
           item_name,

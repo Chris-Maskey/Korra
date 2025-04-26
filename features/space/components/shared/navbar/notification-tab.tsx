@@ -17,8 +17,10 @@ type Notification = {
   recipient_id: string;
   sender_id: string;
   sender_name: string;
-  type: "like" | "comment";
+  type: "like" | "comment" | "follow" | "order_status_update";
   post_id?: string;
+  order_id?: string;
+  message?: string;
   read: boolean;
   created_at: string;
 };
@@ -109,36 +111,59 @@ export default function NotificationTab() {
             : notification,
         ),
       );
+    } else {
+      console.error("Error marking notification as read:", error);
+      // Optionally show an error toast
     }
   };
 
   const markAllAsRead = async () => {
     if (!user) return;
 
+    // Mark only unread notifications as read
+    const unreadNotificationIds = notifications
+      .filter((n) => !n.read)
+      .map((n) => n.id);
+
+    if (unreadNotificationIds.length === 0) return; // No unread notifications to mark
+
     const { error } = await supabase
       .from("notifications")
       .update({ read: true })
-      .eq("recipient_id", user);
+      .in("id", unreadNotificationIds); // Use .in to update multiple rows
 
     if (!error) {
       setNotifications((prev) =>
         prev.map((notification) => ({ ...notification, read: true })),
       );
+    } else {
+      console.error("Error marking all notifications as read:", error);
+      // Optionally show an error toast
     }
   };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const getNotificationMessage = (type: string) => {
-    switch (type) {
+  // This function is now less critical as we have the 'message' field from the trigger
+  // You might still use it for a fallback or specific formatting if needed
+  const getNotificationMessage = (
+    notification: Notification,
+  ): React.ReactNode => {
+    switch (notification.type) {
       case "like":
-        return "liked your post";
+        return `${notification.sender_name} liked your post`;
       case "comment":
-        return "commented on your post";
+        return `${notification.sender_name} commented on your post`;
       case "follow":
-        return "started following you";
+        return `${notification.sender_name} started following you`;
+      case "order_status_update":
+        return notification.message || "Your order status has been updated";
       default:
-        return "interacted with your post";
+        // Display the message field for unknown types or fallback
+        return (
+          notification.message ||
+          `${notification.sender_name} interacted with you`
+        );
     }
   };
 
@@ -165,6 +190,7 @@ export default function NotificationTab() {
                 size="sm"
                 className="text-xs"
                 onClick={markAllAsRead}
+                disabled={loading} // Disable button while loading or marking as read
               >
                 Mark all as read
               </Button>
@@ -180,31 +206,33 @@ export default function NotificationTab() {
                 {notifications.map((notification) => (
                   <div
                     key={notification.id}
-                    className={cn(
-                      "flex cursor-pointer flex-col gap-1 border-b p-3 transition-colors hover:bg-muted",
-                      !notification.read && "bg-muted/50",
-                    )}
                     onClick={() => {
-                      if (!notification.read) markAsRead(notification.id);
+                      if (!notification.read) {
+                        markAsRead(notification.id);
+                      }
                     }}
                   >
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-2">
+                    <div
+                      className={cn(
+                        "flex cursor-pointer flex-col gap-1 border-b p-3 transition-colors hover:bg-muted",
+                        !notification.read && "bg-muted/50",
+                      )}
+                    >
+                      <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <p className="text-xs text-muted-foreground">
-                            {notification.sender_name}{" "}
-                            {getNotificationMessage(notification.type)}
+                            {getNotificationMessage(notification)}{" "}
                           </p>
                         </div>
+                        {!notification.read && (
+                          <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
+                        )}
                       </div>
-                      {!notification.read && (
-                        <span className="mt-1 h-2 w-2 rounded-full bg-primary" />
-                      )}
+                      <p className="text-xs text-muted-foreground">
+                        {formatDistanceToNow(new Date(notification.created_at))}{" "}
+                        ago
+                      </p>
                     </div>
-                    <p className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(notification.created_at))}{" "}
-                      ago
-                    </p>
                   </div>
                 ))}
               </div>

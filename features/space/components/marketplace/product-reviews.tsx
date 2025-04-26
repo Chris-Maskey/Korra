@@ -257,7 +257,7 @@ export default function ProductReviews({
                       <User className="h-5 w-5" />
                     </div>
                     <div>
-                      <p className="font-medium">{review.user_name}</p>
+                      <p className="font-medium">{review.user?.full_name}</p>
                       <p className="text-xs text-muted-foreground">
                         {new Date(review.created_at).toLocaleDateString(
                           "en-US",

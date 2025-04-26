@@ -11,13 +11,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+import { Database } from "@/database.types";
 import { useEffect, useState } from "react";
+import { useChangeOrderStatus } from "../../hooks/dashboard/use-change-order-status";
 
 type MarketplaceOrder = {
   id: string;
   order_date: string;
   total_price: number;
   quantity: number;
+  order_status: Database["public"]["Enums"]["order_status"];
   item: {
     id: string;
     item_name: string;
@@ -35,6 +46,8 @@ type MarketplaceOrderProps = {
 };
 
 const MarketplaceTable = ({ marketplaceOrders }: MarketplaceOrderProps) => {
+  const { mutateAsync: changeOrderStatus, isPending } = useChangeOrderStatus();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(10);
   const [data, setData] = useState(marketplaceOrders);
@@ -54,6 +67,40 @@ const MarketplaceTable = ({ marketplaceOrders }: MarketplaceOrderProps) => {
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
+
+  const handleOrderStatusChange = (
+    orderId: string,
+    newStatus: Database["public"]["Enums"]["order_status"],
+  ) => {
+    changeOrderStatus({ orderId, orderStatus: newStatus });
+  };
+
+  const formatOrderStatus = (
+    status: Database["public"]["Enums"]["order_status"],
+  ) => {
+    switch (status) {
+      case "PROCESSING":
+        return "⏳ Processing";
+      case "PACKAGING":
+        return "📦 Packaging";
+      case "READY _FOR_SHIPPING":
+        return "🚚 Ready for Shipping";
+      case "ON_THE_WAY":
+        return "🚚 On the Way";
+      case "SHIPPED":
+        return "✅ Shipped";
+      default:
+        return status;
+    }
+  };
+
+  const orderStatuses: Database["public"]["Enums"]["order_status"][] = [
+    "PROCESSING",
+    "PACKAGING",
+    "READY _FOR_SHIPPING",
+    "ON_THE_WAY",
+    "SHIPPED",
+  ];
 
   return (
     <div>
@@ -82,7 +129,35 @@ const MarketplaceTable = ({ marketplaceOrders }: MarketplaceOrderProps) => {
                 {order.item?.item_name}
               </TableCell>
               <TableCell className="text-center">{order.quantity}</TableCell>
-              <TableCell className="text-center">🚚 Shipped</TableCell>
+              <TableCell className="text-center">
+                <Select
+                  value={order.order_status}
+                  onValueChange={(newValue) =>
+                    handleOrderStatusChange(
+                      order.id,
+                      newValue as Database["public"]["Enums"]["order_status"],
+                    )
+                  }
+                >
+                  <SelectTrigger className="text-center" disabled={isPending}>
+                    <SelectValue
+                      placeholder={formatOrderStatus(order.order_status)}
+                      className="text-center"
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="text-center">
+                    {orderStatuses.map((status) => (
+                      <SelectItem
+                        key={status}
+                        value={status}
+                        className="text-center"
+                      >
+                        {formatOrderStatus(status)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </TableCell>
               <TableCell className="text-center">
                 ${order.total_price?.toFixed(2)}
               </TableCell>
