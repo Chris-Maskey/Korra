@@ -1,7 +1,14 @@
 "use client";
 import * as React from "react";
 import Image from "next/image";
-import { Star, Users, Award, PawPrintIcon as Paw, Loader2 } from "lucide-react";
+import {
+  Star,
+  Users,
+  Award,
+  PawPrintIcon as Paw,
+  Loader2,
+  Crown,
+} from "lucide-react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -51,7 +58,6 @@ type RecommendationItem =
   | MostFollowedRecommendation
   | HighestRatedRecommendation
   | AvailablePetRecommendation;
-// --- End of Type Definitions ---
 
 export function RecommendationCarousel() {
   const { data, isLoading } = useFeedRecommendations() as {
@@ -95,15 +101,23 @@ export function RecommendationCarousel() {
     switch (item.type) {
       case "mostFollowed":
         return (
-          <Card className="overflow-hidden border-0 shadow-md hover:shadow-lg transition-shadow">
+          <Card
+            onClick={() => router.push(`/space/profile/${item.id}`)}
+            className="overflow-hidden border-0 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+          >
             <div className="relative">
-              <Image
-                src={item.banner_url || "/placeholder-banner.jpg"}
-                alt={`${item.user_name}'s profile cover`}
-                width={320}
-                height={120}
-                className="w-full h-32 object-cover"
-              />
+              {item.banner_url ? (
+                <Image
+                  src={item.banner_url || ""}
+                  alt={`${item.user_name}'s profile cover`}
+                  width={320}
+                  height={120}
+                  className="w-full h-32 object-cover"
+                />
+              ) : (
+                <div className="h-32 bg-gradient-to-b from-transparent to-primary/80"></div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/80"></div>
               <div className="absolute -bottom-4 left-2">
                 <Avatar
                   onClick={() => router.push(`/space/profile/${item.id}`)}
@@ -125,12 +139,12 @@ export function RecommendationCarousel() {
             </div>
             <CardContent className="pt-14 p-4">
               <div className="flex flex-col">
-                <h4
-                  onClick={() => router.push(`/space/profile/${item.id}`)}
-                  className="font-bold text-sm hover:underline hover:underline-offset-1 duration-300 cursor-pointer"
-                >
-                  {item.full_name || "Unknown User"}
-                </h4>
+                <div className="flex items-center gap-2">
+                  <h4 className="font-semibold text-sm cursor-pointer">
+                    {item.full_name || "Unknown User"}
+                  </h4>
+                  <Crown className="h-4 w-4 text-yellow-500" />
+                </div>
                 <span className="text-sm text-muted-foreground">
                   {item.user_name || "unknown"}
                 </span>
@@ -146,7 +160,12 @@ export function RecommendationCarousel() {
 
       case "highestRated":
         return (
-          <Card className="overflow-hidden border-0 shadow-md hover:shadow-lg transition-shadow">
+          <Card
+            onClick={() => {
+              router.push(`/space/marketplace/${item.id}`);
+            }}
+            className="overflow-hidden border-0 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+          >
             <div className="relative">
               <Image
                 src={item.image_url || "/placeholder-product.jpg"}
@@ -155,12 +174,12 @@ export function RecommendationCarousel() {
                 height={200}
                 className="w-full h-40 object-cover"
               />
-              <Badge className="absolute top-2 right-2 bg-amber-500 flex items-center gap-1">
+              <Badge className="absolute top-2 right-2 bg-amber-500 hover:bg-amber-600 flex items-center gap-1">
                 <Award className="h-3 w-3" /> {item.tag}
               </Badge>
             </div>
             <CardContent className="p-4">
-              <h4 className="font-semibold text-lg mb-1">
+              <h4 className="font-semibold text-sm mb-1">
                 {item.item_name || "Unnamed Item"}
               </h4>
               <p className="text-sm text-muted-foreground mb-2">
@@ -184,7 +203,12 @@ export function RecommendationCarousel() {
 
       case "availablePet":
         return (
-          <Card className="overflow-hidden border-0 shadow-md hover:shadow-lg transition-shadow">
+          <Card
+            onClick={() => {
+              router.push(`/space/adoption`);
+            }}
+            className="overflow-hidden border-0 shadow-md hover:shadow-lg transition-shadow cursor-pointer"
+          >
             <div className="relative">
               <Image
                 src={item.image_url || "/placeholder-pet.jpg"}
@@ -193,13 +217,13 @@ export function RecommendationCarousel() {
                 height={200}
                 className="w-full h-40 object-cover"
               />
-              <Badge className="absolute top-2 right-2 bg-green-500 flex items-center gap-1">
+              <Badge className="absolute top-2 right-2 bg-green-500 hover:bg-green-600 flex items-center gap-1">
                 <Paw className="h-3 w-3" /> {item.tag}
               </Badge>
             </div>
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-semibold text-lg mb-1">
+                <h4 className="font-semibold text-sm mb-1">
                   {item.pet_name || "Unnamed Pet"}
                 </h4>
                 <div className="flex items-center gap-2">
@@ -227,9 +251,9 @@ export function RecommendationCarousel() {
   const hasRecommendations = recommendations.length > 0;
 
   return (
-    <div className="space-y-2 w-full max-w-xs mx-auto">
+    <div className="space-y-1 w-full max-w-xs mx-auto">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-semibold">Featured</h3>
+        <h3 className="text-base font-semibold tracking-tight">Featured</h3>
       </div>
 
       {isLoading ? (

@@ -18,12 +18,15 @@ export const getFeedRecommendations = async () => {
     .single();
 
   // Get all profiles with followers count
-  const { data: profiles, error: profilesError } = await supabase.from(
-    "profiles",
-  ).select(`
-    id, full_name, avatar_url, banner_url, user_name, bio,
+  const { data: profiles, error: profilesError } = await supabase
+    .from("profiles")
+    .select(
+      `
+    id, full_name, avatar_url, banner_url, user_name, bio, role,
     follows!follows_following_id_fkey(count)
-  `);
+  `,
+    )
+    .neq("id", auth.user.id);
 
   // Find the most followed manually
   const mostFollowed = profiles
@@ -74,8 +77,6 @@ export const getFeedRecommendations = async () => {
     highestRated = highestRatedData;
     availablePets = availablePetsData;
   }
-
-  console.log(mostFollowed);
 
   return {
     mostFollowed,

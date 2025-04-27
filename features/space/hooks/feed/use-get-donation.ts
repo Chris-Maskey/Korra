@@ -9,39 +9,35 @@ export function useGetDonations(postId: string) {
     queryFn: async () => {
       const supabase = createClient();
 
-      // Get total amount raised
-      const { data: totalData, error: totalError } = await supabase
+      // Get all completed donations for the post to calculate total amount and unique donors
+      const { data: donationsData, error: donationsError } = await supabase
         .from("donations")
-        .select("amount")
+        .select("amount, donor_id")
         .eq("post_id", postId)
         .eq("status", "completed");
 
-      if (totalError) {
-        throw new Error(totalError.message);
-      }
-
-      // Get unique donors count
-      const { data: donorsData, error: donorsError } = await supabase
-        .from("donations")
-        .select("donor_id")
-        .eq("post_id", postId)
-        .eq("status", "completed");
-
-      if (donorsError) {
-        throw new Error(donorsError.message);
+      if (donationsError) {
+        throw new Error(donationsError.message);
       }
 
       // Calculate total amount (convert from cents to dollars)
       const totalRaised =
-        totalData.reduce((sum, donation) => sum + donation.amount, 0) / 100;
+        donationsData.reduce((sum, donation) => sum + donation.amount, 0) / 100;
 
       // Get unique donors count
-      const uniqueDonors = new Set(donorsData.map((d) => d.donor_id)).size;
+      const uniqueDonors = new Set(donationsData.map((d) => d.donor_id)).size;
+
+      // Total number of completed donation entries
+      const totalDonationEntries = donationsData.length;
+
+      console.log("Unique Donors:", uniqueDonors);
+      console.log("Total Donation Entries:", totalDonationEntries);
 
       return {
         totalRaised,
         uniqueDonors,
-        donations: totalData.length,
+        // Renamed for clarity
+        totalDonationEntries,
       };
     },
     enabled: !!postId,
