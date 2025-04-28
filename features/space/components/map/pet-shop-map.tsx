@@ -4,93 +4,6 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { PetShop } from "../../types";
 import { Loader2 } from "lucide-react";
 
-export const mockPetShops: PetShop[] = [
-  {
-    id: "1",
-    name: "Happy Tails Pet Shop",
-    address: "123 Main St, New York, NY 10001",
-    latitude: 40.7128,
-    longitude: -74.006,
-    description:
-      "A full-service pet shop offering supplies, grooming, and adoption services for dogs and cats.",
-    services: ["supplies", "grooming", "adoption"],
-    phone: "(212) 555-1234",
-    website: "https://example.com/happytails",
-  },
-  {
-    id: "2",
-    name: "Pawsome Pets",
-    address: "456 Park Ave, New York, NY 10022",
-    latitude: 40.758,
-    longitude: -73.9855,
-    description:
-      "Luxury pet boutique with premium food, accessories, and professional grooming services.",
-    services: ["supplies", "grooming", "daycare"],
-    phone: "(212) 555-5678",
-    website: "https://example.com/pawsome",
-  },
-  {
-    id: "3",
-    name: "City Veterinary Clinic",
-    address: "789 Broadway, New York, NY 10003",
-    latitude: 40.732,
-    longitude: -73.995,
-    description:
-      "Full-service veterinary clinic offering preventative care, surgery, and emergency services.",
-    services: ["veterinary"],
-    phone: "(212) 555-9012",
-    website: "https://example.com/cityvet",
-  },
-  {
-    id: "4",
-    name: "Furry Friends Adoption Center",
-    address: "321 5th Ave, New York, NY 10016",
-    latitude: 40.748,
-    longitude: -73.9857,
-    description:
-      "Non-profit animal shelter dedicated to finding forever homes for cats and dogs.",
-    services: ["adoption"],
-    phone: "(212) 555-3456",
-    website: "https://example.com/furryfriends",
-  },
-  {
-    id: "5",
-    name: "Bark & Purr Training",
-    address: "654 7th Ave, New York, NY 10019",
-    latitude: 40.763,
-    longitude: -73.983,
-    description:
-      "Professional pet training services for dogs and cats of all ages and breeds.",
-    services: ["training"],
-    phone: "(212) 555-7890",
-    website: "https://example.com/barkpurr",
-  },
-  {
-    id: "6",
-    name: "Pet Paradise Boarding",
-    address: "987 8th Ave, New York, NY 10019",
-    latitude: 40.767,
-    longitude: -73.986,
-    description:
-      "Luxury boarding facility with private suites, playtime, and grooming services.",
-    services: ["boarding", "grooming", "daycare"],
-    phone: "(212) 555-2345",
-    website: "https://example.com/petparadise",
-  },
-  {
-    id: "7",
-    name: "Exotic Pet Emporium",
-    address: "159 9th Ave, New York, NY 10011",
-    latitude: 40.742,
-    longitude: -74.002,
-    description:
-      "Specializing in exotic pets, supplies, and expert care advice.",
-    services: ["supplies"],
-    phone: "(212) 555-6789",
-    website: "https://example.com/exoticpets",
-  },
-];
-
 interface PetShopMapProps {
   shops: PetShop[];
 }
@@ -98,12 +11,16 @@ interface PetShopMapProps {
 export default function PetShopMap({ shops }: PetShopMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
+
+  // eslint-disable-next-line
   const leafletMap = useRef<any>(null);
+  // eslint-disable-next-line
   const markersLayerRef = useRef<any>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // Function to update markers
   const updateMarkers = useCallback(
+    // eslint-disable-next-line
     async (L: any) => {
       if (!leafletMap.current || !markersLayerRef.current) return;
 
