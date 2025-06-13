@@ -17,8 +17,8 @@ jobs:
       - name: Setup PSE
         uses: invisirisk/pse-action@test
         with:
-          api_url: "https://app.stage.invisirisk.com"
-          app_token: ${{ secrets.IR_API_KEY_STAGE }}
+          api_url: "https://app.dev.invisirisk.com"
+          app_token: ${{ secrets.IR_API_KEY }}
 
       - uses: actions/checkout@v4
 
