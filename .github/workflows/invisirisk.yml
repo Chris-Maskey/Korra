@@ -43,6 +43,7 @@ jobs:
      runs-on: ubuntu-latest
      name: Gather Analytics
      needs: test
+     if: always()
      steps:
       - name: Gather Status
         uses: invisirisk/pse-action@test
