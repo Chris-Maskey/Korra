@@ -49,7 +49,7 @@ export default function OrderSuccessPage() {
     createOrder(
       orderDetails.productId,
       orderDetails.quantity,
-      orderDetails.vendorId,
+      orderDetails.vendorId
     ).catch((err) => {
       console.error("Failed to place order:", err);
     });
@@ -144,12 +144,12 @@ export default function OrderSuccessPage() {
                 Shop More
               </Button>
             </Link>
-            <Link href="/space/marketplace" className="flex-1">
+            {/* <Link href="/space/marketplace" className="flex-1">
               <Button size="sm" className="w-full">
                 <Receipt className="w-3.5 h-3.5 mr-2" />
                 My Orders
               </Button>
-            </Link>
+            </Link> */}
           </div>
         </div>
 

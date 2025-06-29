@@ -61,6 +61,7 @@ export function UserCard({
             <AvatarImage
               src={profile.avatar_url || `/placeholder.svg?height=96&width=96`}
               alt={profile.full_name!}
+              className="object-cover"
             />
             <AvatarFallback>
               {profile.full_name!.substring(0, 2).toUpperCase()}

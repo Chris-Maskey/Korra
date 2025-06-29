@@ -27,7 +27,7 @@ export const Dashboard = async () => {
 
   const determineTrend = (
     current: number,
-    previous: number,
+    previous: number
   ): "up" | "down" | "noChange" => {
     if (current > previous) {
       return "up";
@@ -46,14 +46,14 @@ export const Dashboard = async () => {
       badgeValue: `${
         determineTrend(
           martketplaceRevenue.currentMonthRevenue,
-          martketplaceRevenue.previousMonthRevenue,
+          martketplaceRevenue.previousMonthRevenue
         ) === "noChange"
           ? "0"
           : martketplaceRevenue.revenueGrowth.toFixed(1)
       }%`,
       trend: determineTrend(
         martketplaceRevenue.currentMonthRevenue,
-        martketplaceRevenue.previousMonthRevenue,
+        martketplaceRevenue.previousMonthRevenue
       ),
       previousValue: `$${martketplaceRevenue.previousMonthRevenue.toFixed(2)}`,
       period: "vs. Last Month",
@@ -66,14 +66,14 @@ export const Dashboard = async () => {
       badgeValue: `${
         determineTrend(
           engagement.currentMonthEngagement,
-          engagement.previousMonthEngagement,
+          engagement.previousMonthEngagement
         ) === "noChange"
           ? "0"
           : engagement.engagementGrowth.toFixed(1)
       }%`,
       trend: determineTrend(
         engagement.currentMonthEngagement,
-        engagement.previousMonthEngagement,
+        engagement.previousMonthEngagement
       ),
       previousValue: `${engagement.previousMonthEngagement.toFixed(0)}`,
       period: "vs. Last Month",
@@ -86,14 +86,14 @@ export const Dashboard = async () => {
       badgeValue: `${
         determineTrend(
           adoption.currentMonthAdoption,
-          adoption.previousMonthAdoption,
+          adoption.previousMonthAdoption
         ) === "noChange"
           ? "0"
           : adoption.adoptionGrowth.toFixed(1)
       }%`,
       trend: determineTrend(
         adoption.currentMonthAdoption,
-        adoption.previousMonthAdoption,
+        adoption.previousMonthAdoption
       ),
       previousValue: `${adoption.previousMonthAdoption.toFixed(0)}`,
       period: "vs. Last Month",

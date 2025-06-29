@@ -64,9 +64,12 @@ export function UserMenu() {
           <User className="mr-2 h-4 w-4" />
           <span>Manage Account</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer">
+        <DropdownMenuItem
+          onClick={() => router.push("/pricing")}
+          className="cursor-pointer"
+        >
           <CreditCard className="mr-2 h-4 w-4" />
-          <span>Billing</span>
+          <span>Get Premium</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme(theme === "light" ? "dark" : "light")}

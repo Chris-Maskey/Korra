@@ -31,6 +31,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useChangeAdoptionStatus } from "../../hooks/adoption/use-change-adoption-status";
+import { useRouter } from "next/navigation";
 
 type AdoptionCardProps = {
   adoption: AdoptionPost;
@@ -44,6 +45,8 @@ const AdoptionCard = ({ adoption, userId }: AdoptionCardProps) => {
   const { mutateAsync: changeAdoptionStatus, isPending: changePending } =
     useChangeAdoptionStatus();
 
+  const router = useRouter();
+
   const handleDelete = async () => {
     await deleteAdoptionPost(adoption.id);
   };
@@ -53,6 +56,10 @@ const AdoptionCard = ({ adoption, userId }: AdoptionCardProps) => {
       adoptionId: adoption.id,
       adoptionStatus: "ADOPTED",
     });
+  };
+
+  const handleConnect = () => {
+    console.log("Connect");
   };
 
   const getStatusMessage = (status: string) => {
@@ -141,7 +148,13 @@ const AdoptionCard = ({ adoption, userId }: AdoptionCardProps) => {
       </CardContent>
       {adoption?.user_id !== userId && (
         <CardFooter className="p-4 pt-0 flex gap-2">
-          <Button className="flex-1" disabled={deletePending}>
+          <Button
+            className="flex-1"
+            disabled={deletePending}
+            onClick={() =>
+              router.push(`/space/chat?user_id=${adoption.user_id}`)
+            }
+          >
             <MessageCircle className="w-4 h-4 mr-2" />
             Connect
           </Button>

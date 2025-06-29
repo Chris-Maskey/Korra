@@ -22,6 +22,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useGetMessages } from "@/features/space/hooks/chat/use-get-messages";
 import { useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
 
 interface MessageItemProps {
   message: Tables<"messages">;
@@ -46,7 +47,9 @@ const MessageItem = memo(
         )}
         <div className={`max-w-[70%] ${!isCurrentUser ? "ml-2" : ""}`}>
           <div
-            className={`${message.attachment_url ? "rounded-sm" : "rounded-2xl"} px-4 py-2 ${
+            className={`${
+              message.attachment_url ? "rounded-sm" : "rounded-2xl"
+            } px-4 py-2 ${
               isCurrentUser ? "bg-primary text-primary-foreground" : "bg-muted"
             }`}
           >
@@ -66,7 +69,7 @@ const MessageItem = memo(
           <div
             className={cn(
               `flex items-center gap-2 mt-1`,
-              isCurrentUser ? "justify-end" : "justify-start",
+              isCurrentUser ? "justify-end" : "justify-start"
             )}
           >
             <span className="text-xs text-muted-foreground">{timestamp}</span>
@@ -77,17 +80,18 @@ const MessageItem = memo(
         </div>
       </div>
     );
-  },
+  }
 );
 MessageItem.displayName = "MessageItem";
 
 export default function ChatWindow() {
   const supabase = createClient();
   const queryClient = useQueryClient();
+  const searchParams = useSearchParams();
   const { data: users, isLoading } = useGetUsers();
   const [selectedUser, setSelectedUser] = useState<User | undefined>();
   const { data: messages, isLoading: messagesLoading } = useGetMessages(
-    selectedUser ? selectedUser.id : "",
+    selectedUser ? selectedUser.id : ""
   );
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const channelRef = useRef<RealtimeChannel | null>(null);
@@ -125,10 +129,10 @@ export default function ChatWindow() {
               queryClient.setQueryData(
                 ["messages", recipientId],
                 (old: Tables<"messages">[] | undefined) =>
-                  old ? [...old, newMessage] : [newMessage],
+                  old ? [...old, newMessage] : [newMessage]
               );
             }
-          },
+          }
         )
         .on(
           "postgres_changes",
@@ -151,11 +155,11 @@ export default function ChatWindow() {
                 ["messages", recipientId],
                 (old: Tables<"messages">[] | undefined) =>
                   old?.map((msg) =>
-                    msg.id === updatedMessage.id ? updatedMessage : msg,
-                  ),
+                    msg.id === updatedMessage.id ? updatedMessage : msg
+                  )
               );
             }
-          },
+          }
         )
         .subscribe();
 
@@ -164,8 +168,15 @@ export default function ChatWindow() {
         channel.unsubscribe();
       };
     },
-    [userId, supabase, queryClient],
+    [userId, supabase, queryClient]
   );
+
+  useEffect(() => {
+    const userId = searchParams.get("user_id");
+    if (userId) {
+      setSelectedUser(users?.find((user) => user.id === userId));
+    }
+  }, [searchParams, users]);
 
   useEffect(() => {
     const fetchUser = async () => {
