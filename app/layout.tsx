@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { QueryProvider } from "@/components/query-provider";
 import { DonationModalProvider } from "@/context/donation-modal-context";
 import { ModalProvider } from "@/providers/modal-provider";
+import { Analytics } from "@vercel/analytics/react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -36,6 +37,7 @@ export default function RootLayout({
             <DonationModalProvider>
               <ModalProvider />
               {children}
+              <Analytics mode="production" />
             </DonationModalProvider>
           </QueryProvider>
           <Toaster />
