@@ -51,19 +51,23 @@ export default function PetShopMap({ shops }: PetShopMapProps) {
               ${shop.services
                 .map(
                   (service) =>
-                    `<span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">${service}</span>`,
+                    `<span class="inline-block bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">${service}</span>`
                 )
                 .join(" ")}
             </div>
             <p class="text-sm mt-2">${shop.description}</p>
             ${shop.phone ? `<p class="text-sm mt-2">📞 ${shop.phone}</p>` : ""}
-            ${shop.website ? `<p class="text-sm mt-2"><a href="${shop.website}" target="_blank" class="text-blue-500 hover:underline">Visit Website</a></p>` : ""}
+            ${
+              shop.website
+                ? `<p class="text-sm mt-2"><a href="${shop.website}" target="_blank" class="text-blue-500 hover:underline">Visit Website</a></p>`
+                : ""
+            }
           </div>
         `,
           {
             maxWidth: 300,
             className: "custom-popup",
-          },
+          }
         );
       });
 
@@ -76,7 +80,7 @@ export default function PetShopMap({ shops }: PetShopMapProps) {
         leafletMap.current.fitBounds(group.getBounds().pad(0.1));
       }
     },
-    [shops],
+    [shops]
   );
 
   // Initialize map after component mounts
@@ -94,7 +98,8 @@ export default function PetShopMap({ shops }: PetShopMapProps) {
         const L = (await import("leaflet")).default;
 
         // Import CSS
-        await import("leaflet/dist/leaflet.css");
+        // @ts-ignore
+        require("leaflet/dist/leaflet.css");
 
         // Make sure the map container exists and component is still mounted
         if (!mapRef.current || !isMounted) return;
@@ -106,7 +111,7 @@ export default function PetShopMap({ shops }: PetShopMapProps) {
           // Create map centered on New York
           leafletMap.current = L.map(mapRef.current).setView(
             [40.7128, -74.006],
-            13,
+            13
           );
 
           // Add tile layer
@@ -129,7 +134,7 @@ export default function PetShopMap({ shops }: PetShopMapProps) {
               },
               (error) => {
                 console.log("Geolocation error:", error);
-              },
+              }
             );
           }
 
