@@ -1,9 +1,5 @@
 # Korra
 
-<p align="center">
-  <img src="public/logo.png" alt="Korra Logo" width="150" height="150" />
-</p>
-
 Korra is a comprehensive platform for pet owners and animal lovers, providing a social space for community engagement, pet services, adoption, and marketplace features.
 
 ## 🐾 Features
