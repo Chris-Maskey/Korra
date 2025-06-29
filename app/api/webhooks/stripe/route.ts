@@ -1,6 +1,5 @@
 import { stripe } from "@/lib/stripe";
 import { createClient } from "@/lib/supabase/server";
-import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -46,7 +45,7 @@ export async function POST(request: NextRequest) {
         if (error) {
           console.error(
             "Failed to update marketplace quantity:",
-            error.message,
+            error.message
           );
           return new NextResponse("Database update error", { status: 500 });
         }

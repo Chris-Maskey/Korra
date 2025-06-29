@@ -63,7 +63,7 @@ export default function Settings() {
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<string>("profile");
+  const [_activeTab, setActiveTab] = useState<string>("profile");
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(settingSchema),
@@ -188,7 +188,7 @@ export default function Settings() {
         <TabsList
           className={cn(
             "grid w-full mb-8",
-            user?.role === "ORGANIZATION" ? "grid-cols-2" : "grid-cols-1",
+            user?.role === "ORGANIZATION" ? "grid-cols-2" : "grid-cols-1"
           )}
         >
           <TabsTrigger value="profile" className="gap-2">

@@ -4,13 +4,7 @@ import { useEffect, useMemo } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  CheckCircle,
-  ArrowLeft,
-  Package,
-  ShoppingBag,
-  Receipt,
-} from "lucide-react";
+import { CheckCircle, ArrowLeft, Package, ShoppingBag } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/currency-formatter";
@@ -131,8 +125,8 @@ export default function OrderSuccessPage() {
           <div className="bg-muted/50 rounded-lg p-3 flex items-start gap-2">
             <Package className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
             <p className="text-xs text-muted-foreground">
-              We'll process your order and notify you when it's on the way.
-              Check your email for confirmation details.
+              We&apos;ll process your order and notify you when it&apos;s on the
+              way. Check your email for confirmation details.
             </p>
           </div>
 
