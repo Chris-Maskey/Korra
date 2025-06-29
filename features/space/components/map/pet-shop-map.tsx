@@ -99,7 +99,7 @@ export default function PetShopMap({ shops }: PetShopMapProps) {
 
         // Import CSS
         // @ts-ignore
-        require("leaflet/dist/leaflet.css");
+        await import("leaflet/dist/leaflet.css");
 
         // Make sure the map container exists and component is still mounted
         if (!mapRef.current || !isMounted) return;

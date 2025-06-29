@@ -1,6 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useMemo, memo } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  memo,
+  Suspense,
+} from "react";
 import {
   Menu,
   Check,
@@ -84,7 +92,7 @@ const MessageItem = memo(
 );
 MessageItem.displayName = "MessageItem";
 
-export default function ChatWindow() {
+function ChatWindowContent() {
   const supabase = createClient();
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
@@ -296,5 +304,24 @@ export default function ChatWindow() {
         )}
       </div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto" />
+        <p className="mt-2 text-sm text-muted-foreground">Loading chat...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function ChatWindow() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <ChatWindowContent />
+    </Suspense>
   );
 }

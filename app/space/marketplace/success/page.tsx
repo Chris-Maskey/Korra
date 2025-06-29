@@ -1,16 +1,22 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { CheckCircle, ArrowLeft, Package, ShoppingBag } from "lucide-react";
+import {
+  CheckCircle,
+  ArrowLeft,
+  Package,
+  ShoppingBag,
+  Loader2,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/currency-formatter";
 import { createOrder } from "@/features/space/actions/marketplace/order";
 
-export default function OrderSuccessPage() {
+function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -152,5 +158,26 @@ export default function OrderSuccessPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto" />
+        <p className="mt-2 text-sm text-muted-foreground">
+          Processing order...
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function OrderSuccessPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <OrderSuccessContent />
+    </Suspense>
   );
 }
