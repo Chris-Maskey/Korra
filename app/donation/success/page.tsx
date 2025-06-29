@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, ArrowLeft, Share2 } from "lucide-react";
+import { CheckCircle, ArrowLeft, Share2, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { createClient } from "@/lib/supabase/client";
 
-export default function DonationSuccessPage() {
+function DonationSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
@@ -111,5 +111,24 @@ export default function DonationSuccessPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <Loader2 className="h-10 w-10 animate-spin text-primary mx-auto" />
+        <p className="mt-2 text-sm text-muted-foreground">Loading...</p>
+      </div>
+    </div>
+  );
+}
+
+export default function DonationSuccessPage() {
+  return (
+    <Suspense fallback={<LoadingFallback />}>
+      <DonationSuccessContent />
+    </Suspense>
   );
 }
