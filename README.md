@@ -163,10 +163,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📞 Contact
-
-If you have any questions or feedback, please reach out to us at [your-email@example.com].
-
 ---
 
 Built with ❤️ for pets and their humans.
