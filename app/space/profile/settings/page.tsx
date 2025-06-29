@@ -63,6 +63,7 @@ export default function Settings() {
 
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string | null>(null);
+  //eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_activeTab, setActiveTab] = useState<string>("profile");
 
   const form = useForm<ProfileFormValues>({
